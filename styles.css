@@ -14,6 +14,11 @@ input:focus{
   outline: none;
 }
 
+.invert-img {
+  -webkit-transform: scaleX(-1);
+  transform: scaleX(-1);
+}
+
 .container-main {
   width: auto;
   height: 92vh;
@@ -91,7 +96,7 @@ input:focus{
 
 .mems-3 {
   margin: 0;
-  padding: 0 20px;
+  padding: 0 16px;
 
   grid-row: 4 / 6;
   grid-column: 7 / 13;
@@ -131,7 +136,7 @@ input:focus{
 
 .comp-4 {
   margin: 0;
-  padding: 0 20px;
+  padding: 0 16px;
 
   grid-row: 6 / 8;
   grid-column: 7 / 13;
@@ -171,7 +176,7 @@ input:focus{
 
 .hole-5 {
   margin: 0;
-  padding: 0 20px;
+  padding: 0 16px;
 
   grid-row: 8 / 10;
   grid-column: 7 / 13;
@@ -212,35 +217,69 @@ input:focus{
 .onef-6 {
   min-width: 60px;
   min-height: 60px;
+
   grid-row: 4 / 6;
   grid-column: 13 / 14;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .fullf-7 {
   min-width: 60px;
   min-height: 60px;
+
   grid-row: 4 / 6;
   grid-column: 14 / 15;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .oneb-8 {
   min-width: 60px;
   min-height: 60px;
+
   grid-row: 6 / 8;
   grid-column: 13 / 14; 
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .fullb-9 {
   min-width: 60px;
   min-height: 60px;
+
   grid-row: 6 / 8;
   grid-column: 14 / 15;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .ftu-10 {
   min-height: 60px;
+  margin: 0;
+  padding: 0 16px;
+
   grid-row: 8 / 10;
   grid-column: 13 / 15;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ftu-10 .ftu-output-container {
+  min-width: 48px;
+  min-height: 30px;
+  background-color: #191A1B;
+  border-radius: 6px;
 }
 
 .chart-11 {
