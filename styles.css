@@ -79,6 +79,7 @@ input:focus{
 
   background-color: #191A1B;
   color: white;
+  border: transparent;
   border-radius: 8px;
 
 }
@@ -90,8 +91,73 @@ input:focus{
 }
 
 .addp-2 {
+  margin: 0;
+  padding: 0 20px;
+
   grid-row: 4 / 21;
   grid-column: 1 / 7;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.addp-2 .process-labels-container {
+  display: flex;
+  justify-content: space-between;
+  max-width: 304px;
+}
+
+.addp-2 .process-input-container {
+  margin: 0;
+  padding: 0;
+
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.addp-2 .process-input-container input {
+  margin: 0;
+  padding: 0 10px;
+  background-color: #EAEAEA;
+  border: transparent;
+  border-radius: 4px;
+  font-family: "Space Grotesk";
+}
+
+.inpv1 {
+  min-width: 40px;
+}
+
+.inpv2 {
+  max-width: 18px;
+  min-height: 28px;
+  text-align: center;
+}
+
+.addp-2 .process-input-container button {
+  margin: 0;
+  padding: 0;
+
+  min-width: 28px;
+  min-height: 28px;
+
+  background-color: #191A1B;
+  border: transparent;
+  border-radius: 4px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.add-blue {
+  width: 12px;
+  filter: invert(85%) sepia(35%) saturate(6921%) hue-rotate(200deg) brightness(101%) contrast(101%);
+}
+
+.del-red {
+  width: 12px;
 }
 
 .mems-3 {
@@ -114,7 +180,7 @@ input:focus{
 .mems-3 input {
   margin: 0;
   padding: 0 10px;
-  min-height: 26px;
+  min-height: 28px;
   max-width: 60px;
 
   font-family: "Space Grotesk";
@@ -154,7 +220,7 @@ input:focus{
 .comp-4 input {
   margin: 0;
   padding: 0 10px;
-  min-height: 26px;
+  min-height: 28px;
   max-width: 60px;
 
   font-family: "Space Grotesk";
@@ -194,7 +260,7 @@ input:focus{
 .hole-5 input {
   margin: 0;
   padding: 0 10px;
-  min-height: 26px;
+  min-height: 28px;
   max-width: 60px;
 
   font-family: "Space Grotesk";
@@ -283,11 +349,55 @@ input:focus{
 }
 
 .chart-11 {
+  margin: 0;
+  padding: 0 16px;
+
   grid-row: 10 / 21;
   grid-column: 7 / 15;
 }
 
+.chart-11 .chart-container {
+  margin: 0 0 0 8px;
+  padding: 0;
+
+  display: flex;
+  flex-wrap: wrap;
+  height: auto;
+}
+
+.chart-11 .cell-container {
+  margin: 0 0 8px 0;
+  padding: 0;
+
+  max-height: 50px;
+  min-width: 30px;
+  text-align: center;
+}
+
+.chart-11 .cell-container .tu {
+  margin: 4px 0 0 0;
+  padding: 0;
+  font-size: 10px;
+}
+
+.chart-11 .cell {
+  margin: 0;
+  padding: 0;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 30px;
+  height: 30px;
+  
+  border: 2px solid #191A1B;
+  border-radius: 6px;
+}
+
 .sim-12 {
+  margin: 0;
+  padding: 0 20px;
+
   grid-row: 1 / 21;
   grid-column: 15 / 21;
 }
