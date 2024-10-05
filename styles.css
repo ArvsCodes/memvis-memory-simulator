@@ -4,6 +4,16 @@ body {
   font-family: "Space Grotesk";
 }
 
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input:focus{
+  outline: none;
+}
+
 .container-main {
   width: auto;
   height: 92vh;
@@ -26,7 +36,7 @@ body {
 
 .memvis-1 {
   grid-row: 1 / 4;
-  grid-column: 1 / 16;
+  grid-column: 1 / 15;
   background-color: #FAFAFA;
   box-shadow: none;
   border: none;
@@ -76,64 +86,169 @@ body {
 
 .addp-2 {
   grid-row: 4 / 21;
-  grid-column: 1 / 6;
+  grid-column: 1 / 7;
 }
 
 .mems-3 {
+  margin: 0;
+  padding: 0 20px;
+
   grid-row: 4 / 6;
-  grid-column: 6 / 14;
+  grid-column: 7 / 13;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mems-3 .container-mems-input {
+  display: flex;
+  gap: 12px;
+}
+
+.mems-3 input {
+  margin: 0;
+  padding: 0 10px;
+  min-height: 26px;
+  max-width: 60px;
+
+  font-family: "Space Grotesk";
+  background-color: #EAEAEA;
+  border: transparent;
+  border-radius: 6px;
+}
+
+.mems-3 button {
+  margin: 0;
+  padding: 4px 12px;
+
+  background-color: #191A1B;
+  color: white;
+  font-family: "Space Grotesk";
+  border: transparent;
+  border-radius: 6px;
 }
 
 .comp-4 {
+  margin: 0;
+  padding: 0 20px;
+
   grid-row: 6 / 8;
-  grid-column: 6 / 14;
+  grid-column: 7 / 13;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.comp-4 .container-comp-input {
+  display: flex;
+  gap: 12px;
+}
+
+.comp-4 input {
+  margin: 0;
+  padding: 0 10px;
+  min-height: 26px;
+  max-width: 60px;
+
+  font-family: "Space Grotesk";
+  background-color: #EAEAEA;
+  border: transparent;
+  border-radius: 6px;
+}
+
+.comp-4 button {
+  margin: 0;
+  padding: 4px 12px;
+
+  background-color: #191A1B;
+  color: white;
+  font-family: "Space Grotesk";
+  border: transparent;
+  border-radius: 6px;
 }
 
 .hole-5 {
+  margin: 0;
+  padding: 0 20px;
+
   grid-row: 8 / 10;
-  grid-column: 6 / 14;
+  grid-column: 7 / 13;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.hole-5 .container-hole-input {
+  display: flex;
+  gap: 12px;
+}
+
+.hole-5 input {
+  margin: 0;
+  padding: 0 10px;
+  min-height: 26px;
+  max-width: 60px;
+
+  font-family: "Space Grotesk";
+  background-color: #EAEAEA;
+  border: transparent;
+  border-radius: 6px;
+}
+
+.hole-5 button {
+  margin: 0;
+  padding: 4px 12px;
+
+  background-color: #191A1B;
+  color: white;
+  font-family: "Space Grotesk";
+  border: transparent;
+  border-radius: 6px;
 }
 
 .onef-6 {
   min-width: 60px;
   min-height: 60px;
   grid-row: 4 / 6;
-  grid-column: 14 / 15;
+  grid-column: 13 / 14;
 }
 
 .fullf-7 {
   min-width: 60px;
   min-height: 60px;
   grid-row: 4 / 6;
-  grid-column: 15 / 16;
+  grid-column: 14 / 15;
 }
 
 .oneb-8 {
   min-width: 60px;
   min-height: 60px;
   grid-row: 6 / 8;
-  grid-column: 14 / 15; 
+  grid-column: 13 / 14; 
 }
 
 .fullb-9 {
   min-width: 60px;
   min-height: 60px;
   grid-row: 6 / 8;
-  grid-column: 15 / 16;
+  grid-column: 14 / 15;
 }
 
 .ftu-10 {
   min-height: 60px;
   grid-row: 8 / 10;
-  grid-column: 14 / 16;
+  grid-column: 13 / 15;
 }
 
 .chart-11 {
   grid-row: 10 / 21;
-  grid-column: 6 / 16;
+  grid-column: 7 / 15;
 }
 
 .sim-12 {
   grid-row: 1 / 21;
-  grid-column: 16 / 21;
+  grid-column: 15 / 21;
 }
