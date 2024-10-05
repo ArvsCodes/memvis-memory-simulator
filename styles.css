@@ -85,7 +85,7 @@ input:focus{
 }
 
 .memvis-1 .subheading {
-  gap: 20px;
+  gap: 16px;
   display: flex;
   align-items: center;
 }
@@ -101,19 +101,44 @@ input:focus{
   flex-direction: column;
 }
 
-.addp-2 .process-labels-container {
-  display: flex;
-  justify-content: space-between;
-  max-width: 304px;
+.addp-2 h2 {
+  margin: 16px 0 0 0;
+  padding: 0;
 }
 
-.addp-2 .process-input-container {
+.addp-2 .process-labels-container {
   margin: 0;
   padding: 0;
 
   display: flex;
   justify-content: space-between;
-  gap: 10px;
+  max-width: 298px;
+}
+
+.addp-2 .process-input-container {
+  margin: 0 0 6px 0;
+  padding: 0;
+
+  display: flex;
+  justify-content: space-between;
+  gap: 0px;
+}
+
+.num-inputs {
+  margin: 0;
+  padding: 0;
+
+  display: flex;
+  gap: 12px;
+  width: 309px;
+}
+
+.button-container {
+  margin: 0;
+  padding: 0;
+
+  display: flex;
+  gap: 12px;
 }
 
 .addp-2 .process-input-container input {
@@ -152,12 +177,64 @@ input:focus{
 }
 
 .add-blue {
-  width: 12px;
+  width: 18px;
   filter: invert(85%) sepia(35%) saturate(6921%) hue-rotate(200deg) brightness(101%) contrast(101%);
 }
 
 .del-red {
-  width: 12px;
+  width: 18px;
+  filter: invert(92%) sepia(11%) saturate(7485%) hue-rotate(299deg) brightness(95%) contrast(113%);
+}
+
+.edit-yellow {
+  width: 16px;
+  filter: invert(95%) sepia(82%) saturate(471%) hue-rotate(10deg) brightness(98%) contrast(106%);
+}
+
+.processes-container {
+  margin: 0;
+  padding: 0;
+
+  height: 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0px;
+}
+
+.user-inputs {
+  margin: 0;
+  padding: 0;
+
+  display: flex;
+  justify-content: space-between;
+  width: 296px;
+}
+
+.edit-del-container {
+  margin: 0;
+  padding: 0;
+
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+}
+
+.edit-del-container button {
+  margin: 0;
+  padding: 0;
+
+  min-width: 28px;
+  min-height: 28px;
+
+  background-color: #191A1B;
+  border: transparent;
+  border-radius: 4px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .mems-3 {
@@ -365,8 +442,13 @@ input:focus{
   height: auto;
 }
 
+.chart-11 h2 {
+  margin: 16px 0 12px 0;
+  padding: 0;
+}
+
 .chart-11 .cell-container {
-  margin: 0 0 8px 0;
+  margin: 0 0 4px 0;
   padding: 0;
 
   max-height: 50px;
@@ -400,4 +482,42 @@ input:focus{
 
   grid-row: 1 / 21;
   grid-column: 15 / 21;
+}
+
+.sim-12 .simulation-container {
+  margin: 0;
+  padding: 0;
+
+  display: flex;
+  flex-direction: column;
+  height: 580px;
+  gap: 6px;
+}
+
+.sim-12 .block {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
+  border-radius: 10px;
+  font-weight: 400;
+}
+
+.blk1 {
+  background-color: #d188ff;
+}
+.blk2 {
+  background-color: #a3c6ff;
+}
+.blk3 {
+  background-color: #EAEAEA;
+}
+.blk4 {
+  background-color: #e4ff92;
+}
+.blk5 {
+  background-color: #ffd392;
+}
+.blk6 {
+  background-color: #ff9292;
 }
