@@ -4,6 +4,14 @@ body {
   font-family: "Space Grotesk";
 }
 
+body {
+  opacity: 0; /* Start hidden */
+  transition: opacity 1s ease; /* Fading animation */
+}
+body.fade-in {
+  opacity: 1; /* Fully visible after fade */
+}
+
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
