@@ -5,11 +5,11 @@ body {
 }
 
 body {
-  opacity: 0; /* Start hidden */
-  transition: opacity 1s ease; /* Fading animation */
+  opacity: 0;
+  transition: opacity 1s ease;
 }
 body.fade-in {
-  opacity: 1; /* Fully visible after fade */
+  opacity: 1;
 }
 
 input::-webkit-outer-spin-button,

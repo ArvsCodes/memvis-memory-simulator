@@ -13,26 +13,24 @@
             justify-content: center;
             align-items: center;
             background-color: white;
-            transition: opacity 1s ease; /* Fading animation */
+            transition: opacity 1s ease; 
             opacity: 1;
         }
 
         img {
-            width: 250px; /* Adjust the size of your SVG logo */
+            width: 200px; 
         }
     </style>
     <script>
-        // Fade-out and then redirect to the main page (index.html)
+
         window.onload = function () {
             setTimeout(function () {
-                // Fade out effect by changing opacity
                 document.body.style.opacity = 0;
 
-                // After the fade-out duration, redirect to index.html
                 setTimeout(function () {
                     window.location.href = "main.html";
-                }, 1000); // Match this with the CSS transition duration
-            }, 1000); // Wait for 2 seconds before starting the fade-out
+                }, 1000); 
+            }, 1000); 
         }
     </script>
 </head>
