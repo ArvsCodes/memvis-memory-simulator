@@ -113,3 +113,141 @@ function addDeleteListeners() {
 
 // Initial call to add delete listeners for any existing delete buttons
 addDeleteListeners();
+
+// Initialize a counter for the time unit
+let timeCounter = 1;
+
+// Select the item that will trigger the creation of the new cell-container
+const triggerItem = document.querySelector('.onef-6');
+const chartContainer = document.querySelector('.chart-container');
+
+// Event listener for the trigger item
+triggerItem.addEventListener('click', function() {
+    // Create a new cell-container div
+    const newCellContainer = document.createElement('div');
+    newCellContainer.classList.add('cell-container');
+
+    // Create the inner content for the new cell
+    const newCell = document.createElement('div');
+    newCell.classList.add('cell');
+    newCell.innerHTML = `<p>J1</p>`; // Change 'J1' as needed for uniqueness
+
+    const timeUnit = document.createElement('p');
+    timeUnit.classList.add('tu');
+    timeUnit.textContent = timeCounter; // Set the time unit as the current counter value
+
+    // Append the new elements to the cell-container
+    newCellContainer.appendChild(newCell);
+    newCellContainer.appendChild(timeUnit);
+
+    // Append the new cell-container to the chart-container
+    chartContainer.appendChild(newCellContainer);
+
+    // Increment the counter for the next time unit
+    timeCounter++;
+});
+
+// Select the item that will trigger the removal of the latest cell-container
+const removeItem = document.querySelector('.oneb-8');
+
+// Event listener for the remove item
+removeItem.addEventListener('click', function() {
+    const chartContainer = document.querySelector('.chart-container');
+    
+    // Check if there are any cell-containers to remove
+    const lastCellContainer = chartContainer.lastElementChild;
+    if (lastCellContainer) {
+        chartContainer.removeChild(lastCellContainer); // Remove the last cell-container
+        timeCounter--; // Decrement the counter
+    }
+});
+
+// Select the item that will trigger the adding of cell-containers
+const autoAddItem = document.querySelector('.fullf-7');
+const autoAddImage = autoAddItem.querySelector('img'); // Select the image inside fullf-7
+
+// Variable to keep track of the interval for adding cell-containers
+let intervalId = null;
+
+// Event listener for the auto-add item
+autoAddItem.addEventListener('click', function() {
+    if (intervalId === null) {
+        // If no interval is set, start adding cell-containers every second
+        intervalId = setInterval(() => {
+            // Create a new cell-container div
+            const newCellContainer = document.createElement('div');
+            newCellContainer.classList.add('cell-container');
+
+            // Create the inner content for the new cell
+            const newCell = document.createElement('div');
+            newCell.classList.add('cell');
+            newCell.innerHTML = `<p>J1</p>`; // Change 'J1' as needed for uniqueness
+
+            const timeUnit = document.createElement('p');
+            timeUnit.classList.add('tu');
+            timeUnit.textContent = timeCounter; // Set the time unit as the current counter value
+
+            // Append the new elements to the cell-container
+            newCellContainer.appendChild(newCell);
+            newCellContainer.appendChild(timeUnit);
+
+            // Append the new cell-container to the chart-container
+            chartContainer.appendChild(newCellContainer);
+
+            // Increment the counter for the next time unit
+            timeCounter++;
+        }, 1000); // Run every second
+
+        // Change the image to player-pause.svg
+        autoAddImage.src = 'images/player-pause.svg';
+        autoAddItem.classList.add('active'); // Add active class
+    } else {
+        // If interval is already running, clear it
+        clearInterval(intervalId);
+        intervalId = null; // Reset the intervalId
+
+        // Revert the image back to player-skip-forward.svg
+        autoAddImage.src = 'images/player-skip-forward.svg';
+        autoAddItem.classList.remove('active'); // Remove active class
+    }
+});
+
+
+// Variable to keep track of the interval for removing cell-containers
+let removeIntervalId = null;
+
+// Select the item that will trigger the removal of cell-containers
+const autoRemoveItem = document.querySelector('.fullb-9');
+const autoRemoveImage = autoRemoveItem.querySelector('img'); // Select the image inside fullf-7
+
+// Event listener for the remove item
+autoRemoveItem.addEventListener('click', function() {
+    if (removeIntervalId === null) {
+        // If no interval is set, start removing cell-containers every second
+        removeIntervalId = setInterval(() => {
+            const chartContainer = document.querySelector('.chart-container');
+            
+            // Check if there are any cell-containers to remove
+            const lastCellContainer = chartContainer.lastElementChild;
+            if (lastCellContainer) {
+                chartContainer.removeChild(lastCellContainer); // Remove the last cell-container
+                timeCounter--; // Decrement the counter if desired
+            }
+        }, 1000); // Run every second
+
+        // Change the image to player-pause.svg
+        autoRemoveImage.src = 'images/player-pause.svg';
+        autoRemoveItem.classList.add('active'); // Add active class
+    } else {
+        // If interval is already running, clear it
+        clearInterval(removeIntervalId);
+        removeIntervalId = null; // Reset the intervalId
+
+        // Revert the image back to player-skip-forward.svg
+        autoRemoveImage.src = 'images/player-skip-forward.svg';
+        autoRemoveItem.classList.remove('active'); // Remove active class
+    }
+});
+
+
+
