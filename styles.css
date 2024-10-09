@@ -448,7 +448,7 @@ input:focus{
 }
 
 .oneb-8 img {
-  transition: filter 0.6s; /* Smooth transition for the filter effect */
+  transition: filter 0.6s;
 }
 
 .oneb-8:hover img {
@@ -475,7 +475,7 @@ input:focus{
 }
 
 .fullb-9 img {
-  transition: filter 0.6s; /* Smooth transition for the filter effect */
+  transition: filter 0.6s;
 }
 
 .fullb-9:hover img {
@@ -579,10 +579,10 @@ input:focus{
   justify-content: flex-start;
   align-items: center;
   height: 580px;
-  gap: 1px;
+  gap: 6px;
 
   text-align: center;
-  background-color: #EAEAEA;
+  background-color: #FCFDFD;
   border-radius: 8px;
 }
 
@@ -592,9 +592,9 @@ input:focus{
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%; /* Full width of the container */
-  height: 100%; /* Full height of the container */
-  background-color: #EAEAEA; /* Optional background color */
+  width: 100%;
+  height: 100%;
+  background-color: #EAEAEA;
   color: black;
   font-size: 14px;
   border-radius: 8px;
@@ -604,16 +604,27 @@ input:focus{
 .process-block {
   margin: 0;
   padding: 0;
-  width: 100%; /* Full width of the container */
-  background-color: #4CAF50; /* You can change the color as needed */
-  margin-bottom: 5px; /* Space between blocks */
+  width: 100%;
   border-radius: 8px;
   font-size: 14px;
 
-  display: flex; /* Use flexbox for centering */
-  justify-content: center; /* Center horizontally */
-  align-items: center; /* Center vertically */
-  text-align: center; /* Ensure text is centered */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.hole {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  border-radius: 8px;
+  font-size: 14px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 }
 
 /* .sim-12 .block {

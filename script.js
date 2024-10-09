@@ -273,7 +273,7 @@ memoryButton.addEventListener('click', function() {
 });
 
 // Select the onef-6 button for adding the block to the simulation-container
-const addBlockButton = document.querySelector('.onef-6');
+const forwardOnceButton = document.querySelector('.onef-6');
 
 
 // Initialize an index to keep track of the current process to be added
@@ -284,78 +284,136 @@ let totalUsedMemory = 0; // Initialize a variable to keep track of used memory
 
 // Define an array of colors
 const colors = [
-  '#9e0142', 
-  '#d53e4f', 
-  '#f46d43', 
-  '#fdae61', 
-  '#fee08b', 
-  '#e6f598', 
-  '#abdda4', 
-  '#66c2a5', 
-  '#3288bd',
-  '#5e4fa2' 
+  '#b9fbc0', 
+  '#98f5e1', 
+  '#8eecf5', 
+  '#90dbf4', 
+  '#a3c4f3', 
+  '#cfbaf0', 
+  '#f1c0e8', 
+  '#ffcfd2', 
+  '#fde4cf',
+  '#fbf8cc' 
 ];
 
+// Initialize an index to keep track of which process to decrement
+let decrementIndex = 0;
+
 // Event listener for the add block functionality
-addBlockButton.addEventListener('click', function() {
-  const parentProcesses = document.querySelectorAll('.parent-processes-container .processes-container');
+forwardOnceButton.addEventListener('click', function() {
+    const parentProcesses = document.querySelectorAll('.parent-processes-container .processes-container');
 
-  // Check if there are any processes to add
-  if (currentProcessIndex < parentProcesses.length) {
-      // Get the current process based on the currentProcessIndex
-      const currentProcess = parentProcesses[currentProcessIndex];
-      const processName = currentProcess.querySelector('.user-inputs p:nth-child(1)').textContent; // Process name
-      const processSize = parseInt(currentProcess.querySelector('.user-inputs p:nth-child(2)').textContent); // Process size
-      const memorySize = parseInt(memorySizeInput.value); // Get the total memory size input
+    // Check if there are any processes to add
+    if (currentProcessIndex < parentProcesses.length) {
+        const memorySize = parseInt(memorySizeInput.value); // Get the total memory size input
+        const memoryDiv = simulationContainer.querySelector('.memory-div'); // Get the memory div
 
-      // Ensure memory size and process size are provided
-      if (memorySize && processSize) {
-          // Create a new process block div
-          const blockDiv = document.createElement('div');
-          blockDiv.classList.add('process-block');
-          blockDiv.textContent = `${processName} (${processSize} KB)`; // Add process name and size to the block
+        // If we still have enough memory, proceed to add blocks
+        if (memoryDiv) {
+            const remainingMemorySize = parseInt(memoryDiv.textContent.split(' ')[0]); // Extract remaining memory
 
-          // Set the height of the block proportional to the memory size
-          const blockHeightPercentage = (processSize / memorySize) * 100;
-          blockDiv.style.height = `${blockHeightPercentage}%`; // Set the height as a percentage
+            // Get the current process based on the currentProcessIndex
+            const currentProcess = parentProcesses[currentProcessIndex];
+            const processName = currentProcess.querySelector('.user-inputs p:nth-child(1)').textContent; // Process name
+            const processSize = parseInt(currentProcess.querySelector('.user-inputs p:nth-child(2)').textContent); // Process size
+            let processTU = parseInt(currentProcess.querySelector('.user-inputs p:nth-child(3)').textContent); // Process time unit
 
-          // Set the color of the block based on the index
-          blockDiv.style.backgroundColor = colors[currentProcessIndex % colors.length];
+            // Check if there is enough memory to add the process
+            if (remainingMemorySize >= processSize) {
+                // Create a new process block div
+                const blockDiv = document.createElement('div');
+                blockDiv.classList.add('process-block');
 
-          // Append the process block to the simulation container (at the bottom)
-          simulationContainer.appendChild(blockDiv);
+                // Decrement the time unit by 1 for display purposes
+                processTU--;
 
-          // Update total used memory
-          totalUsedMemory += processSize; // Add the size of the current process
+                // Set the text for the block including the decremented time unit
+                blockDiv.textContent = `${processName} (${processSize} KB) (${processTU} seconds left)`;
 
-          // Calculate the remaining memory size
-          const remainingMemorySize = memorySize - totalUsedMemory;
+                // Set the height of the block proportional to the memory size
+                const blockHeightPercentage = (processSize / memorySize) * 100;
+                blockDiv.style.height = `${blockHeightPercentage}%`; // Set the height as a percentage
 
-          // Remove any existing memory div and create a new one
-          let memoryDiv = simulationContainer.querySelector('.memory-div');
-          if (memoryDiv) {
-              memoryDiv.remove(); // Remove the existing memory div
-          }
+                // Set the color of the block based on the index
+                blockDiv.style.backgroundColor = colors[currentProcessIndex % colors.length];
 
-          // Create a new memory div for the remaining memory
-          memoryDiv = document.createElement('div');
-          memoryDiv.classList.add('memory-div');
-          memoryDiv.style.height = `${(remainingMemorySize / memorySize) * 100}%`; // Memory div height proportional to the remaining memory
-          memoryDiv.textContent = `${remainingMemorySize} KB remaining`;
+                // Append the process block to the simulation container (at the bottom)
+                simulationContainer.appendChild(blockDiv);
 
-          // Append the updated memory div below the process blocks
-          simulationContainer.appendChild(memoryDiv);
+                // Update total used memory
+                totalUsedMemory += processSize; // Add the size of the current process
 
-          // Increment the process index to point to the next process for the next click
-          currentProcessIndex++;
-      }
-  } else {
-      console.log("All processes have been added to the simulation.");
-  }
+                // Calculate the remaining memory size
+                const newRemainingMemorySize = memorySize - totalUsedMemory;
+
+                // Remove any existing memory div and create a new one
+                let memoryDiv = simulationContainer.querySelector('.memory-div');
+                if (memoryDiv) {
+                    memoryDiv.remove(); // Remove the existing memory div
+                }
+
+                // Create a new memory div for the remaining memory
+                memoryDiv = document.createElement('div');
+                memoryDiv.classList.add('memory-div');
+                memoryDiv.style.height = `${(newRemainingMemorySize / memorySize) * 100}%`; // Memory div height proportional to the remaining memory
+                memoryDiv.textContent = `${newRemainingMemorySize} KB remaining`;
+
+                // Append the updated memory div below the process blocks
+                simulationContainer.appendChild(memoryDiv);
+
+                // Increment the process index to point to the next process for the next click
+                currentProcessIndex++;
+            } else {
+                // If there isn't enough memory, just decrement the time unit of the topmost block
+                const processBlocks = simulationContainer.querySelectorAll('.process-block');
+
+                // Check if we have any process blocks
+                if (processBlocks.length > 0) {
+                    // Get the top process block
+                    const topBlock = processBlocks[decrementIndex];
+                    const timeUnitMatch = topBlock.textContent.match(/\((\d+) seconds left\)/);
+
+                    // Decrement the time unit if it's greater than 0
+                    if (timeUnitMatch) {
+                        let timeUnit = parseInt(timeUnitMatch[1]);
+                        if (timeUnit > 0) {
+                            timeUnit--; // Decrement the time unit
+                            topBlock.textContent = topBlock.textContent.replace(/\((\d+) seconds left\)/, `(${timeUnit} seconds left)`); // Update block text
+                        }
+
+                        // If time unit reaches 0, create a hole div
+                        if (timeUnit === 0) {
+                            const processSize = parseInt(topBlock.textContent.match(/\((\d+) KB\)/)[1]); // Extract the process size
+
+                            // Create a hole div
+                            const holeDiv = document.createElement('div');
+                            holeDiv.classList.add('hole');
+                            holeDiv.style.backgroundColor = '#EAEAEA'; // Gray color for the hole
+                            holeDiv.textContent = `${processSize} KB remaining`; // Display remaining size
+
+                            // Set the height of the hole div
+                            const holeHeightPercentage = (processSize / memorySize) * 100;
+                            holeDiv.style.height = `${holeHeightPercentage}%`;
+
+                            // Insert the hole div in place of the topBlock
+                            simulationContainer.replaceChild(holeDiv, topBlock);
+
+                            // Move to the next process block
+                            decrementIndex++;
+                        } else {
+                            // Always move to the next process block after decrementing
+                            decrementIndex++;
+
+                            // Reset decrementIndex if it exceeds the number of blocks
+                            if (decrementIndex >= processBlocks.length) {
+                                decrementIndex = 0; // Reset to loop back to the first block
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    } else {
+        console.log("All processes have been added to the simulation.");
+    }
 });
-
-
-
-
-
-
