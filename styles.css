@@ -576,20 +576,56 @@ input:focus{
 
   display: flex;
   flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
   height: 580px;
-  gap: 6px;
+  gap: 1px;
+
+  text-align: center;
+  background-color: #EAEAEA;
+  border-radius: 8px;
 }
 
-.sim-12 .block {
+.memory-div {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%; /* Full width of the container */
+  height: 100%; /* Full height of the container */
+  background-color: #EAEAEA; /* Optional background color */
+  color: black;
+  font-size: 14px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.process-block {
+  margin: 0;
+  padding: 0;
+  width: 100%; /* Full width of the container */
+  background-color: #4CAF50; /* You can change the color as needed */
+  margin-bottom: 5px; /* Space between blocks */
+  border-radius: 8px;
+  font-size: 14px;
+
+  display: flex; /* Use flexbox for centering */
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  text-align: center; /* Ensure text is centered */
+}
+
+/* .sim-12 .block {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100px;
   border-radius: 10px;
   font-weight: 400;
-}
+} */
 
-.blk1 {
+/* .blk1 {
   background-color: #d188ff;
 }
 .blk2 {
@@ -606,4 +642,4 @@ input:focus{
 }
 .blk6 {
   background-color: #ff9292;
-}
+} */

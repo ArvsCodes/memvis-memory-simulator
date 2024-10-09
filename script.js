@@ -121,7 +121,7 @@ let timeCounter = 1;
 const triggerItem = document.querySelector('.onef-6');
 const chartContainer = document.querySelector('.chart-container');
 
-// Event listener for the trigger item
+// // Event listener for the trigger item
 triggerItem.addEventListener('click', function() {
     // Create a new cell-container div
     const newCellContainer = document.createElement('div');
@@ -146,6 +146,7 @@ triggerItem.addEventListener('click', function() {
     // Increment the counter for the next time unit
     timeCounter++;
 });
+
 
 // Select the item that will trigger the removal of the latest cell-container
 const removeItem = document.querySelector('.oneb-8');
@@ -248,6 +249,113 @@ autoRemoveItem.addEventListener('click', function() {
         autoRemoveItem.classList.remove('active'); // Remove active class
     }
 });
+
+// Select the simulation container and the memory size input
+const simulationContainer = document.querySelector('.simulation-container');
+
+// Event listener for memory size input
+memoryButton.addEventListener('click', function() {
+  const memorySize = memorySizeInput.value;
+
+  // Clear the simulation container first
+  simulationContainer.innerHTML = '';
+
+  // Check if there is a valid input
+  if (memorySize) {
+      // Create a new div with the memory size value in the center
+      const memoryDiv = document.createElement('div');
+      memoryDiv.classList.add('memory-div'); // Add a class to style the div
+      memoryDiv.textContent = `${memorySize} KB`;
+
+      // Append the div to the simulation container
+      simulationContainer.appendChild(memoryDiv);
+  }
+});
+
+// Select the onef-6 button for adding the block to the simulation-container
+const addBlockButton = document.querySelector('.onef-6');
+
+
+// Initialize an index to keep track of the current process to be added
+let currentProcessIndex = 0;
+
+// Variable to track the total used memory
+let totalUsedMemory = 0; // Initialize a variable to keep track of used memory
+
+// Define an array of colors
+const colors = [
+  '#9e0142', 
+  '#d53e4f', 
+  '#f46d43', 
+  '#fdae61', 
+  '#fee08b', 
+  '#e6f598', 
+  '#abdda4', 
+  '#66c2a5', 
+  '#3288bd',
+  '#5e4fa2' 
+];
+
+// Event listener for the add block functionality
+addBlockButton.addEventListener('click', function() {
+  const parentProcesses = document.querySelectorAll('.parent-processes-container .processes-container');
+
+  // Check if there are any processes to add
+  if (currentProcessIndex < parentProcesses.length) {
+      // Get the current process based on the currentProcessIndex
+      const currentProcess = parentProcesses[currentProcessIndex];
+      const processName = currentProcess.querySelector('.user-inputs p:nth-child(1)').textContent; // Process name
+      const processSize = parseInt(currentProcess.querySelector('.user-inputs p:nth-child(2)').textContent); // Process size
+      const memorySize = parseInt(memorySizeInput.value); // Get the total memory size input
+
+      // Ensure memory size and process size are provided
+      if (memorySize && processSize) {
+          // Create a new process block div
+          const blockDiv = document.createElement('div');
+          blockDiv.classList.add('process-block');
+          blockDiv.textContent = `${processName} (${processSize} KB)`; // Add process name and size to the block
+
+          // Set the height of the block proportional to the memory size
+          const blockHeightPercentage = (processSize / memorySize) * 100;
+          blockDiv.style.height = `${blockHeightPercentage}%`; // Set the height as a percentage
+
+          // Set the color of the block based on the index
+          blockDiv.style.backgroundColor = colors[currentProcessIndex % colors.length];
+
+          // Append the process block to the simulation container (at the bottom)
+          simulationContainer.appendChild(blockDiv);
+
+          // Update total used memory
+          totalUsedMemory += processSize; // Add the size of the current process
+
+          // Calculate the remaining memory size
+          const remainingMemorySize = memorySize - totalUsedMemory;
+
+          // Remove any existing memory div and create a new one
+          let memoryDiv = simulationContainer.querySelector('.memory-div');
+          if (memoryDiv) {
+              memoryDiv.remove(); // Remove the existing memory div
+          }
+
+          // Create a new memory div for the remaining memory
+          memoryDiv = document.createElement('div');
+          memoryDiv.classList.add('memory-div');
+          memoryDiv.style.height = `${(remainingMemorySize / memorySize) * 100}%`; // Memory div height proportional to the remaining memory
+          memoryDiv.textContent = `${remainingMemorySize} KB remaining`;
+
+          // Append the updated memory div below the process blocks
+          simulationContainer.appendChild(memoryDiv);
+
+          // Increment the process index to point to the next process for the next click
+          currentProcessIndex++;
+      }
+  } else {
+      console.log("All processes have been added to the simulation.");
+  }
+});
+
+
+
 
 
 
