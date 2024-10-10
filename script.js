@@ -43,45 +43,46 @@ const parentProcessesContainer = document.querySelector('.parent-processes-conta
 
 // Event listener to handle adding a process
 addProcessButton.addEventListener('click', function() {
-  const processName = processNameInput.value;
-  const processSize = processSizeInput.value;
-  const processTU = processTUInput.value;
-
-  // Create the new process div (processes-container)
-  const newProcessDiv = document.createElement('div');
-  newProcessDiv.classList.add('processes-container');
-
-  // Create the user-inputs div
-  const userInputsDiv = document.createElement('div');
-  userInputsDiv.classList.add('user-inputs');
-  userInputsDiv.innerHTML = `
-      <p>${processName}</p>
-      <p>${processSize} KB</p>
-      <p>${processTU}</p>
-  `;
-
-  // Create the edit-del-container div
-  const editDelDiv = document.createElement('div');
-  editDelDiv.classList.add('edit-del-container');
-  editDelDiv.innerHTML = `
-      <button class="del-button"><img src="images/x.svg" class="del-red"></button>
-  `;
-
-  // Append user-inputs and edit-del-container to the new process div
-  newProcessDiv.appendChild(userInputsDiv);
-  newProcessDiv.appendChild(editDelDiv);
-
-  // Append the new process div to the parent-processes-container
-  parentProcessesContainer.appendChild(newProcessDiv);
-
-  // Clear the input fields
-  processNameInput.value = '';
-  processSizeInput.value = '';
-  processTUInput.value = '';
-
-  // Add delete listeners for the new process
-  addDeleteListeners();
-});
+    const processName = processNameInput.value;
+    const processSize = processSizeInput.value;
+    const processTU = processTUInput.value;
+  
+    // Create the new process div (processes-container)
+    const newProcessDiv = document.createElement('div');
+    newProcessDiv.classList.add('processes-container');
+  
+    // Create the user-inputs div
+    const userInputsDiv = document.createElement('div');
+    userInputsDiv.classList.add('user-inputs');
+    userInputsDiv.innerHTML = `
+        <p>${processName}</p>
+        <p>${processSize} KB</p>
+        <p>${processTU}</p>
+    `;
+  
+    // Create the edit-del-container div
+    const editDelDiv = document.createElement('div');
+    editDelDiv.classList.add('edit-del-container');
+    editDelDiv.innerHTML = `
+        <button class="del-button"><img src="images/x.svg" class="del-red"></button>
+    `;
+  
+    // Append user-inputs and edit-del-container to the new process div
+    newProcessDiv.appendChild(userInputsDiv);
+    newProcessDiv.appendChild(editDelDiv);
+  
+    // Append the new process div to the parent-processes-container
+    parentProcessesContainer.appendChild(newProcessDiv);
+  
+    // Clear the input fields
+    processNameInput.value = '';
+    processSizeInput.value = '';
+    processTUInput.value = '';
+  
+    // Add delete listeners for the new process
+    addDeleteListeners();
+  });
+  
 
 // Select the delete button for clearing inputs
 const delProcessButton = document.querySelector('.process-input-container .del-button');
@@ -118,11 +119,11 @@ addDeleteListeners();
 let timeCounter = 1;
 
 // Select the item that will trigger the creation of the new cell-container
-const triggerItem = document.querySelector('.onef-6');
+const addItem = document.querySelector('.onef-6');
 const chartContainer = document.querySelector('.chart-container');
 
 // // Event listener for the trigger item
-triggerItem.addEventListener('click', function() {
+addItem.addEventListener('click', function() {
     // Create a new cell-container div
     const newCellContainer = document.createElement('div');
     newCellContainer.classList.add('cell-container');
@@ -253,28 +254,32 @@ autoRemoveItem.addEventListener('click', function() {
 // Select the simulation container and the memory size input
 const simulationContainer = document.querySelector('.simulation-container');
 
-// Event listener for memory size input
 memoryButton.addEventListener('click', function() {
-  const memorySize = memorySizeInput.value;
+    const memorySize = memorySizeInput.value;
 
-  // Clear the simulation container first
-  simulationContainer.innerHTML = '';
+    // Clear the simulation container first
+    simulationContainer.innerHTML = '';
 
-  // Check if there is a valid input
-  if (memorySize) {
-      // Create a new div with the memory size value in the center
-      const memoryDiv = document.createElement('div');
-      memoryDiv.classList.add('memory-div'); // Add a class to style the div
-      memoryDiv.textContent = `${memorySize} KB`;
+    // Check if there is a valid input
+    if (memorySize) {
+        // Create a new div for the memory size
+        const memoryDiv = document.createElement('div');
+        memoryDiv.classList.add('memory-div');
 
-      // Append the div to the simulation container
-      simulationContainer.appendChild(memoryDiv);
-  }
+        // Create the <p> tag for memory size
+        const memoryText = document.createElement('p');
+        memoryText.textContent = `${memorySize} KB`;
+
+        // Append the <p> tag to the memory div
+        memoryDiv.appendChild(memoryText);
+
+        // Append the memory div to the simulation container
+        simulationContainer.appendChild(memoryDiv);
+    }
 });
 
 // Select the onef-6 button for adding the block to the simulation-container
 const forwardOnceButton = document.querySelector('.onef-6');
-
 
 // Initialize an index to keep track of the current process to be added
 let currentProcessIndex = 0;
@@ -298,36 +303,38 @@ const colors = [
 
 // Initialize an index to keep track of which process to decrement
 let decrementIndex = 0;
+let holeExists = false; // Track if a hole exists
+let holeSize = 0; // Store the size of the hole
 
-// Event listener for the add block functionality
+// Event listener for the forwardOnceButton functionality
 forwardOnceButton.addEventListener('click', function() {
     const parentProcesses = document.querySelectorAll('.parent-processes-container .processes-container');
+    const processBlocks = simulationContainer.querySelectorAll('.process-block');
 
-    // Check if there are any processes to add
+    // First: Attempt to add new process blocks if there’s available memory
     if (currentProcessIndex < parentProcesses.length) {
-        const memorySize = parseInt(memorySizeInput.value); // Get the total memory size input
+        const memorySize = parseInt(memorySizeInput.value); // Get total memory size input
         const memoryDiv = simulationContainer.querySelector('.memory-div'); // Get the memory div
 
-        // If we still have enough memory, proceed to add blocks
         if (memoryDiv) {
             const remainingMemorySize = parseInt(memoryDiv.textContent.split(' ')[0]); // Extract remaining memory
 
-            // Get the current process based on the currentProcessIndex
+            // Get the current process from the parent container
             const currentProcess = parentProcesses[currentProcessIndex];
             const processName = currentProcess.querySelector('.user-inputs p:nth-child(1)').textContent; // Process name
             const processSize = parseInt(currentProcess.querySelector('.user-inputs p:nth-child(2)').textContent); // Process size
             let processTU = parseInt(currentProcess.querySelector('.user-inputs p:nth-child(3)').textContent); // Process time unit
 
-            // Check if there is enough memory to add the process
+            // Check if there’s enough memory to add the process
             if (remainingMemorySize >= processSize) {
                 // Create a new process block div
                 const blockDiv = document.createElement('div');
                 blockDiv.classList.add('process-block');
 
-                // Decrement the time unit by 1 for display purposes
+                // Decrement the time unit by 1 immediately
                 processTU--;
 
-                // Set the text for the block including the decremented time unit
+                // Set the text for the block, including the decremented time unit
                 blockDiv.textContent = `${processName} (${processSize} KB) (${processTU} seconds left)`;
 
                 // Set the height of the block proportional to the memory size
@@ -341,7 +348,7 @@ forwardOnceButton.addEventListener('click', function() {
                 simulationContainer.appendChild(blockDiv);
 
                 // Update total used memory
-                totalUsedMemory += processSize; // Add the size of the current process
+                totalUsedMemory += processSize;
 
                 // Calculate the remaining memory size
                 const newRemainingMemorySize = memorySize - totalUsedMemory;
@@ -355,65 +362,122 @@ forwardOnceButton.addEventListener('click', function() {
                 // Create a new memory div for the remaining memory
                 memoryDiv = document.createElement('div');
                 memoryDiv.classList.add('memory-div');
-                memoryDiv.style.height = `${(newRemainingMemorySize / memorySize) * 100}%`; // Memory div height proportional to the remaining memory
+                memoryDiv.style.height = `${(newRemainingMemorySize / memorySize) * 100}%`; // Memory div height proportional to remaining memory
                 memoryDiv.textContent = `${newRemainingMemorySize} KB remaining`;
 
                 // Append the updated memory div below the process blocks
                 simulationContainer.appendChild(memoryDiv);
 
-                // Increment the process index to point to the next process for the next click
+                // Increment the process index to point to the next process
                 currentProcessIndex++;
-            } else {
-                // If there isn't enough memory, just decrement the time unit of the topmost block
-                const processBlocks = simulationContainer.querySelectorAll('.process-block');
 
-                // Check if we have any process blocks
-                if (processBlocks.length > 0) {
-                    // Get the top process block
-                    const topBlock = processBlocks[decrementIndex];
-                    const timeUnitMatch = topBlock.textContent.match(/\((\d+) seconds left\)/);
-
-                    // Decrement the time unit if it's greater than 0
-                    if (timeUnitMatch) {
-                        let timeUnit = parseInt(timeUnitMatch[1]);
-                        if (timeUnit > 0) {
-                            timeUnit--; // Decrement the time unit
-                            topBlock.textContent = topBlock.textContent.replace(/\((\d+) seconds left\)/, `(${timeUnit} seconds left)`); // Update block text
-                        }
-
-                        // If time unit reaches 0, create a hole div
-                        if (timeUnit === 0) {
-                            const processSize = parseInt(topBlock.textContent.match(/\((\d+) KB\)/)[1]); // Extract the process size
-
-                            // Create a hole div
-                            const holeDiv = document.createElement('div');
-                            holeDiv.classList.add('hole');
-                            holeDiv.style.backgroundColor = '#EAEAEA'; // Gray color for the hole
-                            holeDiv.textContent = `${processSize} KB remaining`; // Display remaining size
-
-                            // Set the height of the hole div
-                            const holeHeightPercentage = (processSize / memorySize) * 100;
-                            holeDiv.style.height = `${holeHeightPercentage}%`;
-
-                            // Insert the hole div in place of the topBlock
-                            simulationContainer.replaceChild(holeDiv, topBlock);
-
-                            // Move to the next process block
-                            decrementIndex++;
-                        } else {
-                            // Always move to the next process block after decrementing
-                            decrementIndex++;
-
-                            // Reset decrementIndex if it exceeds the number of blocks
-                            if (decrementIndex >= processBlocks.length) {
-                                decrementIndex = 0; // Reset to loop back to the first block
-                            }
-                        }
-                    }
-                }
+                return; // Stop here if we’ve added a process
             }
         }
-    } else {
-        console.log("All processes have been added to the simulation.");
+    }
+
+    // Second: Handle existing blocks or holes
+    if (holeExists) {
+        // Check if any process can fit in the hole
+        let foundProcess = null;
+        for (let i = currentProcessIndex; i < parentProcesses.length; i++) {
+            const processSize = parseInt(parentProcesses[i].querySelector('.user-inputs p:nth-child(2)').textContent);
+            if (processSize <= holeSize) {
+                foundProcess = parentProcesses[i];
+                currentProcessIndex = i; // Update currentProcessIndex to the process we found
+                break; // Stop looking once we find a fitting process
+            }
+        }
+
+        if (foundProcess) {
+            const processName = foundProcess.querySelector('.user-inputs p:nth-child(1)').textContent;
+            let processSize = parseInt(foundProcess.querySelector('.user-inputs p:nth-child(2)').textContent);
+            let processTU = parseInt(foundProcess.querySelector('.user-inputs p:nth-child(3)').textContent);
+
+            // Create a new process block to fill the hole
+            const blockDiv = document.createElement('div');
+            blockDiv.classList.add('process-block');
+            processTU--; // Decrement time unit
+
+            blockDiv.textContent = `${processName} (${processSize} KB) (${processTU} seconds left)`;
+
+            // Set the height based on hole size
+            const blockHeightPercentage = (processSize / parseInt(memorySizeInput.value)) * 100;
+            blockDiv.style.height = `${blockHeightPercentage}%`;
+
+            blockDiv.style.backgroundColor = colors[currentProcessIndex % colors.length];
+
+            const holeBlock = simulationContainer.querySelector('.hole');
+            simulationContainer.replaceChild(blockDiv, holeBlock);
+
+            // Create a new smaller hole if there’s leftover space
+            holeSize -= processSize;
+            if (holeSize > 0) {
+                const remainingHoleDiv = document.createElement('div');
+                remainingHoleDiv.classList.add('hole');
+                remainingHoleDiv.style.height = `${(holeSize / parseInt(memorySizeInput.value)) * 100}%`;
+                remainingHoleDiv.style.backgroundColor = '#EAEAEA';
+                remainingHoleDiv.textContent = `${holeSize} KB remaining`;
+
+                simulationContainer.insertBefore(remainingHoleDiv, blockDiv.nextSibling);
+            } else {
+                holeExists = false; // No hole left
+            }
+
+            // Important: Skip to the next process block after adding one
+            decrementIndex++;
+            if (decrementIndex >= processBlocks.length) {
+                decrementIndex = 0; // Loop back
+            }
+            return; // Stop here if a process was added to the hole
+        } else {
+            // If no processes fit, continue to check for time unit decrements
+            holeExists = true; // Keep the hole if no process fits
+        }
+    }
+
+    // Handle time unit decrements for existing blocks if no processes were added
+    if (processBlocks.length > 0) {
+        const topBlock = processBlocks[decrementIndex];
+        const timeUnitMatch = topBlock.textContent.match(/\((\d+) seconds left\)/);
+
+        if (timeUnitMatch) {
+            let timeUnit = parseInt(timeUnitMatch[1]);
+            if (timeUnit > 0) {
+                timeUnit--; // Decrement time unit
+                topBlock.textContent = topBlock.textContent.replace(/\((\d+) seconds left\)/, `(${timeUnit} seconds left)`);
+            }
+
+            if (timeUnit === 0) {
+                // Create a hole if the block reaches 0
+                const processSize = parseInt(topBlock.textContent.match(/\((\d+) KB\)/)[1]);
+                const holeDiv = document.createElement('div');
+                holeDiv.classList.add('hole');
+                holeDiv.style.height = topBlock.style.height;
+                holeDiv.style.backgroundColor = '#EAEAEA';
+                holeDiv.textContent = `${processSize} KB remaining`;
+
+                simulationContainer.replaceChild(holeDiv, topBlock);
+                holeExists = true;
+                holeSize = processSize;
+            }
+
+            // Move to the next process block
+            decrementIndex++;
+            if (decrementIndex >= processBlocks.length) {
+                decrementIndex = 0; // Loop back
+            }
+        }
     }
 });
+
+
+
+
+
+
+
+
+
+
+
