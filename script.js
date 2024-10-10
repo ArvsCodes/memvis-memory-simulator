@@ -380,7 +380,7 @@ forwardOnceButton.addEventListener('click', function() {
         }
     }
 
-    // Second: Handle existing blocks or holes
+    // Second: Handle existing blocks or holes WORKING CURRENT
     if (holeExists) {
         // Check if any process can fit in the hole
         let foundProcess = null;
@@ -449,8 +449,7 @@ forwardOnceButton.addEventListener('click', function() {
             }
         }
     }
-
-    // Handle time unit decrements for existing blocks if no processes were added
+    // // // Handle time unit decrements for existing blocks if no processes were added
     if (processBlocks.length > 0) {
         const currentBlock = processBlocks[decrementIndex]; // Start at the current block index
         const timeUnitMatch = currentBlock.textContent.match(/\((\d+) seconds left\)/);
