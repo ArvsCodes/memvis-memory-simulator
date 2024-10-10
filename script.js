@@ -305,8 +305,9 @@ const colors = [
 let decrementIndex = 0;
 let holeExists = false; // Track if a hole exists
 let holeSize = 0; // Store the size of the hole
+let addedProcesses = []; // Track added process names
+let holeIndex = -1; // Store the index of the hole
 
-// Event listener for the forwardOnceButton functionality
 forwardOnceButton.addEventListener('click', function() {
     const parentProcesses = document.querySelectorAll('.parent-processes-container .processes-container');
     const processBlocks = simulationContainer.querySelectorAll('.process-block');
@@ -325,8 +326,8 @@ forwardOnceButton.addEventListener('click', function() {
             const processSize = parseInt(currentProcess.querySelector('.user-inputs p:nth-child(2)').textContent); // Process size
             let processTU = parseInt(currentProcess.querySelector('.user-inputs p:nth-child(3)').textContent); // Process time unit
 
-            // Check if there’s enough memory to add the process
-            if (remainingMemorySize >= processSize) {
+            // Check if there’s enough memory to add the process and it hasn't been added already
+            if (remainingMemorySize >= processSize && !addedProcesses.includes(processName)) {
                 // Create a new process block div
                 const blockDiv = document.createElement('div');
                 blockDiv.classList.add('process-block');
@@ -368,6 +369,9 @@ forwardOnceButton.addEventListener('click', function() {
                 // Append the updated memory div below the process blocks
                 simulationContainer.appendChild(memoryDiv);
 
+                // Mark this process as added
+                addedProcesses.push(processName);
+
                 // Increment the process index to point to the next process
                 currentProcessIndex++;
 
@@ -382,7 +386,7 @@ forwardOnceButton.addEventListener('click', function() {
         let foundProcess = null;
         for (let i = currentProcessIndex; i < parentProcesses.length; i++) {
             const processSize = parseInt(parentProcesses[i].querySelector('.user-inputs p:nth-child(2)').textContent);
-            if (processSize <= holeSize) {
+            if (processSize <= holeSize && !addedProcesses.includes(parentProcesses[i].querySelector('.user-inputs p:nth-child(1)').textContent)) {
                 foundProcess = parentProcesses[i];
                 currentProcessIndex = i; // Update currentProcessIndex to the process we found
                 break; // Stop looking once we find a fitting process
@@ -424,60 +428,62 @@ forwardOnceButton.addEventListener('click', function() {
                 holeExists = false; // No hole left
             }
 
-            // Important: Skip to the next process block after adding one
-            decrementIndex++;
+            // Mark this process as added
+            addedProcesses.push(processName);
+
+            // Set the index to the block after the hole
+            decrementIndex = Array.prototype.indexOf.call(processBlocks, blockDiv) + 1;
             if (decrementIndex >= processBlocks.length) {
-                decrementIndex = 0; // Loop back
+                decrementIndex = 0; // Loop back to the first block if we reach the end
             }
+            holeIndex = -1; // Reset hole index
+
             return; // Stop here if a process was added to the hole
         } else {
-            // If no processes fit, continue to check for time unit decrements
-            holeExists = true; // Keep the hole if no process fits
+            // If no process fits, decrement the block below the hole
+            if (holeIndex >= 0) {
+                decrementIndex = holeIndex + 1;
+                if (decrementIndex >= processBlocks.length) {
+                    decrementIndex = 0; // Loop to the top if necessary
+                }
+            }
         }
     }
 
     // Handle time unit decrements for existing blocks if no processes were added
     if (processBlocks.length > 0) {
-        const topBlock = processBlocks[decrementIndex];
-        const timeUnitMatch = topBlock.textContent.match(/\((\d+) seconds left\)/);
+        const currentBlock = processBlocks[decrementIndex]; // Start at the current block index
+        const timeUnitMatch = currentBlock.textContent.match(/\((\d+) seconds left\)/);
 
         if (timeUnitMatch) {
             let timeUnit = parseInt(timeUnitMatch[1]);
+
+            // Decrement the current block's time unit
             if (timeUnit > 0) {
                 timeUnit--; // Decrement time unit
-                topBlock.textContent = topBlock.textContent.replace(/\((\d+) seconds left\)/, `(${timeUnit} seconds left)`);
+                currentBlock.textContent = currentBlock.textContent.replace(/\((\d+) seconds left\)/, `(${timeUnit} seconds left)`);
             }
 
+            // Create a hole if the time unit reaches 0
             if (timeUnit === 0) {
-                // Create a hole if the block reaches 0
-                const processSize = parseInt(topBlock.textContent.match(/\((\d+) KB\)/)[1]);
+                const processSize = parseInt(currentBlock.textContent.match(/\((\d+) KB\)/)[1]);
                 const holeDiv = document.createElement('div');
                 holeDiv.classList.add('hole');
-                holeDiv.style.height = topBlock.style.height;
+                holeDiv.style.height = currentBlock.style.height;
                 holeDiv.style.backgroundColor = '#EAEAEA';
                 holeDiv.textContent = `${processSize} KB remaining`;
 
-                simulationContainer.replaceChild(holeDiv, topBlock);
+                simulationContainer.replaceChild(holeDiv, currentBlock);
                 holeExists = true;
                 holeSize = processSize;
+                holeIndex = decrementIndex; // Store the index of the hole
             }
 
-            // Move to the next process block
+            // Move to the next process block for the next click
             decrementIndex++;
             if (decrementIndex >= processBlocks.length) {
-                decrementIndex = 0; // Loop back
+                decrementIndex = 0; // Loop back to the first block if we reach the end
             }
         }
     }
 });
-
-
-
-
-
-
-
-
-
-
-
