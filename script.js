@@ -3,13 +3,13 @@ window.onload = function () {
     
     // Predefined list of processes
     const predefinedProcesses = [
-        { name: 'A', size: 500, timeUnit: 3 },
-        { name: 'B', size: 250, timeUnit: 4 },
-        { name: 'C', size: 200, timeUnit: 5 },
-        { name: 'D', size: 350, timeUnit: 3 },
-        { name: 'E', size: 60, timeUnit: 5 },
-        { name: 'F', size: 300, timeUnit: 3 },
-        { name: 'G', size: 400, timeUnit: 2 }
+        { name: 'Job 1', size: 500, timeUnit: 3 },
+        { name: 'Job 2', size: 250, timeUnit: 4 },
+        { name: 'Job 3', size: 200, timeUnit: 5 },
+        { name: 'Job 4', size: 350, timeUnit: 3 },
+        { name: 'Job 5', size: 60, timeUnit: 5 },
+        { name: 'Job 6', size: 300, timeUnit: 3 },
+        { name: 'Job 7', size: 400, timeUnit: 2 }
     ];
   
     // Automatically add these predefined processes to the list
@@ -216,93 +216,6 @@ removeItem.addEventListener('click', function() {
     }
 });
 
-// Select the item that will trigger the adding of cell-containers
-const autoAddItem = document.querySelector('.fullf-7');
-const autoAddImage = autoAddItem.querySelector('img'); // Select the image inside fullf-7
-
-// Variable to keep track of the interval for adding cell-containers
-let intervalId = null;
-
-// Event listener for the auto-add item
-autoAddItem.addEventListener('click', function() {
-    if (intervalId === null) {
-        // If no interval is set, start adding cell-containers every second
-        intervalId = setInterval(() => {
-            // Create a new cell-container div
-            const newCellContainer = document.createElement('div');
-            newCellContainer.classList.add('cell-container');
-
-            // Create the inner content for the new cell
-            const newCell = document.createElement('div');
-            newCell.classList.add('cell');
-            newCell.innerHTML = `<p>J1</p>`; // Change 'J1' as needed for uniqueness
-
-            const timeUnit = document.createElement('p');
-            timeUnit.classList.add('tu');
-            timeUnit.textContent = timeCounter; // Set the time unit as the current counter value
-
-            // Append the new elements to the cell-container
-            newCellContainer.appendChild(newCell);
-            newCellContainer.appendChild(timeUnit);
-
-            // Append the new cell-container to the chart-container
-            chartContainer.appendChild(newCellContainer);
-
-            // Increment the counter for the next time unit
-            timeCounter++;
-        }, 1000); // Run every second
-
-        // Change the image to player-pause.svg
-        autoAddImage.src = 'images/player-pause.svg';
-        autoAddItem.classList.add('active'); // Add active class
-    } else {
-        // If interval is already running, clear it
-        clearInterval(intervalId);
-        intervalId = null; // Reset the intervalId
-
-        // Revert the image back to player-skip-forward.svg
-        autoAddImage.src = 'images/player-skip-forward.svg';
-        autoAddItem.classList.remove('active'); // Remove active class
-    }
-});
-
-
-// Variable to keep track of the interval for removing cell-containers
-let removeIntervalId = null;
-
-// Select the item that will trigger the removal of cell-containers
-const autoRemoveItem = document.querySelector('.fullb-9');
-const autoRemoveImage = autoRemoveItem.querySelector('img'); // Select the image inside fullf-7
-
-// Event listener for the remove item
-autoRemoveItem.addEventListener('click', function() {
-    if (removeIntervalId === null) {
-        // If no interval is set, start removing cell-containers every second
-        removeIntervalId = setInterval(() => {
-            const chartContainer = document.querySelector('.chart-container');
-            
-            // Check if there are any cell-containers to remove
-            const lastCellContainer = chartContainer.lastElementChild;
-            if (lastCellContainer) {
-                chartContainer.removeChild(lastCellContainer); // Remove the last cell-container
-                timeCounter--; // Decrement the counter if desired
-            }
-        }, 1000); // Run every second
-
-        // Change the image to player-pause.svg
-        autoRemoveImage.src = 'images/player-pause.svg';
-        autoRemoveItem.classList.add('active'); // Add active class
-    } else {
-        // If interval is already running, clear it
-        clearInterval(removeIntervalId);
-        removeIntervalId = null; // Reset the intervalId
-
-        // Revert the image back to player-skip-forward.svg
-        autoRemoveImage.src = 'images/player-skip-forward.svg';
-        autoRemoveItem.classList.remove('active'); // Remove active class
-    }
-});
-
 // Select the simulation container and the memory size input
 const simulationContainer = document.querySelector('.simulation-container');
 
@@ -405,13 +318,27 @@ let addedProcesses = []; // Track added process names
 let holeIndex = -1; // Store the index of the hole
 let coalescingCounter = 0; // New counter for tracking coalescing clicks
 
+
+// Initialize a history stack for memory states
+let memoryHistory = [];
+
+// Function to get the current state of the memory container
+function getCurrentMemoryState() {
+    const memoryState = [];
+    const blocks = simulationContainer.children;
+    
+    for (let block of blocks) {
+        memoryState.push(block.outerHTML); // Store the entire block's HTML
+    }
+    
+    return memoryState.join(''); // Join them into a single string
+}
+
+
+
 forwardOnceButton.addEventListener('click', function() {
-    // if (coalescingHoleTime > 0 && (timeCounter % coalescingHoleTime === 0) && timeCounter > 0) {
-    //     const holesCombined = coalesceAdjacentHoles();
-    //     if (holesCombined) {
-    //         return; // If holes were combined, stop and wait for the next click
-    //     }
-    // }
+    // Store the current state before changes
+    memoryHistory.push(getCurrentMemoryState());
 
     coalescingCounter++; // Increment the coalescing click counter
 
@@ -602,5 +529,77 @@ forwardOnceButton.addEventListener('click', function() {
                 decrementIndex = 0; // Loop back to the first block if we reach the end
             }
         }
+    }
+});
+
+// Select the item for going backward
+const backwardOnceButton = document.querySelector('.oneb-8');
+
+// Event listener for backward button
+backwardOnceButton.addEventListener('click', function() {
+    // Check if there's a previous state to revert to
+    if (memoryHistory.length > 0) {
+        const previousState = memoryHistory.pop(); // Get the last state
+
+        // Update the simulation container with the previous state
+        simulationContainer.innerHTML = previousState; // Restore the previous memory container
+    }
+});
+
+// Select the fullf-7 button
+const forwardFullButton = document.querySelector('.fullf-7');
+const forwardFullImage = forwardFullButton.querySelector('img'); // Get the image inside the button
+
+// Variable to keep track of the interval for auto-forwarding
+let forwardIntervalId = null;
+
+// Event listener for the auto-forward button
+forwardFullButton.addEventListener('click', function() {
+    if (forwardIntervalId === null) {
+        // If no interval is set, start auto-clicking forwardOnceButton every second
+        forwardIntervalId = setInterval(() => {
+            forwardOnceButton.click(); // Simulate the click on forwardOnceButton
+        }, 1000); // Run every second
+
+        // Change the image to player-pause.svg
+        forwardFullImage.src = 'images/player-pause.svg';
+        forwardFullButton.classList.add('active'); // Optionally indicate it's active
+    } else {
+        // If the interval is already running, stop it
+        clearInterval(forwardIntervalId);
+        forwardIntervalId = null; // Reset the intervalId
+
+        // Revert the image back to player-skip-forward.svg
+        forwardFullImage.src = 'images/player-skip-forward.svg';
+        forwardFullButton.classList.remove('active'); // Optionally revert to inactive
+    }
+});
+
+// Select the backward full button
+const backwardFullButton = document.querySelector('.fullb-9');
+const backwardFullImage = backwardFullButton.querySelector('img'); // Get the image inside the button
+
+// Variable to keep track of the interval for auto-backwarding
+let backwardIntervalId = null;
+
+// Event listener for the auto-backward button
+backwardFullButton.addEventListener('click', function() {
+    if (backwardIntervalId === null) {
+        // If no interval is set, start auto-clicking backwardOnceButton every second
+        backwardIntervalId = setInterval(() => {
+            backwardOnceButton.click(); // Simulate the click on backwardOnceButton
+        }, 1000); // Run every second
+
+        // Change the image to player-pause.svg
+        backwardFullImage.src = 'images/player-pause.svg';
+        backwardFullButton.classList.add('active'); // Optionally indicate it's active
+    } else {
+        // If the interval is already running, stop it
+        clearInterval(backwardIntervalId);
+        backwardIntervalId = null; // Reset the intervalId
+
+        // Revert the image back to player-skip-forward.svg
+        backwardFullImage.src = 'images/player-skip-forward.svg';
+        backwardFullButton.classList.remove('active'); // Optionally revert to inactive
     }
 });
