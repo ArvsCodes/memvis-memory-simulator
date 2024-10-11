@@ -420,7 +420,8 @@ forwardOnceButton.addEventListener('click', function() {
                 const remainingHoleDiv = document.createElement('div');
                 remainingHoleDiv.classList.add('hole');
                 remainingHoleDiv.style.height = `${(holeSize / parseInt(memorySizeInput.value)) * 100}%`;
-                remainingHoleDiv.style.backgroundColor = '#EAEAEA';
+                remainingHoleDiv.style.backgroundColor = 'var(--primary-color)';
+                remainingHoleDiv.style.color = 'var(--text-color)';
                 remainingHoleDiv.textContent = `${holeSize} KB remaining`;
 
                 simulationContainer.insertBefore(remainingHoleDiv, blockDiv.nextSibling);
@@ -469,7 +470,8 @@ forwardOnceButton.addEventListener('click', function() {
                 const holeDiv = document.createElement('div');
                 holeDiv.classList.add('hole');
                 holeDiv.style.height = currentBlock.style.height;
-                holeDiv.style.backgroundColor = '#EAEAEA';
+                holeDiv.style.backgroundColor = 'var(--primary-color)';
+                holeDiv.style.color = 'var(--text-color)';
                 holeDiv.textContent = `${processSize} KB remaining`;
 
                 simulationContainer.replaceChild(holeDiv, currentBlock);
