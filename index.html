@@ -1,24 +1,46 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="darkmode">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Memvis</title>
-    <link rel="icon" href="images/memvis-favicon-01.svg" type="image/svg+xml">
+    <link rel="icon" href="images/memvis-logo-teal.svg" type="image/svg+xml">
     <style>
+        :root {
+        --base-color: #FAFAFA;
+        --base-variant: #FCFDFD;
+        --text-color: #191A1B;
+        --secondary-text: #555555;
+        --primary-color: #EAEAEA;
+        }
+
+        .darkmode {
+        --base-color: #162332;
+        --base-variant: #1c2b3b;
+        --text-color: #ffffff;
+        --secondary-text: #6decac;
+        --primary-color: #24374c;
+        --accent-color: #2d435b;
+        }
+
         body, html {
             height: 100%;
+            width: 100%;
             margin: 0;
             display: flex;
             justify-content: center;
             align-items: center;
-            background-color: white;
+            background-color: var(--base-color);
             transition: opacity 1s ease; 
             opacity: 1;
         }
 
         img {
             width: 200px; 
+        }
+
+        .teal {
+        filter: invert(86%) sepia(13%) saturate(1468%) hue-rotate(88deg) brightness(98%) contrast(88%);
         }
     </style>
     <script>
@@ -34,7 +56,7 @@
         }
     </script>
 </head>
-<body>
-    <img src="images/memvis-logo.svg" alt="Logo">
+<body class="darkmode">
+    <img src="images/memvis-logo-black.svg" alt="Logo" class="teal">
 </body>
 </html>
