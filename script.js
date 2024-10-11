@@ -1,6 +1,56 @@
 window.onload = function () {
-  document.body.classList.add('fade-in');
+    document.body.classList.add('fade-in');
+    
+    // Predefined list of processes
+    const predefinedProcesses = [
+        { name: 'A', size: 500, timeUnit: 3 },
+        { name: 'B', size: 250, timeUnit: 4 },
+        { name: 'C', size: 200, timeUnit: 5 },
+        { name: 'D', size: 350, timeUnit: 3 },
+        { name: 'E', size: 60, timeUnit: 5 },
+        { name: 'F', size: 300, timeUnit: 3 },
+        { name: 'G', size: 400, timeUnit: 2 }
+    ];
+  
+    // Automatically add these predefined processes to the list
+    predefinedProcesses.forEach(process => {
+        addProcessToList(process.name, process.size, process.timeUnit);
+    });
 };
+
+// Function to add a process to the list (reuse the existing logic)
+function addProcessToList(processName, processSize, processTU) {
+    // Create the new process div (processes-container)
+    const newProcessDiv = document.createElement('div');
+    newProcessDiv.classList.add('processes-container');
+
+    // Create the user-inputs div
+    const userInputsDiv = document.createElement('div');
+    userInputsDiv.classList.add('user-inputs');
+    userInputsDiv.innerHTML = `
+        <p>${processName}</p>
+        <p>${processSize} KB</p>
+        <p>${processTU}</p>
+    `;
+
+    // Create the edit-del-container div
+    const editDelDiv = document.createElement('div');
+    editDelDiv.classList.add('edit-del-container');
+    editDelDiv.innerHTML = `
+        <button class="del-button"><img src="images/x.svg" class="del-red"></button>
+    `;
+
+    // Append user-inputs and edit-del-container to the new process div
+    newProcessDiv.appendChild(userInputsDiv);
+    newProcessDiv.appendChild(editDelDiv);
+
+    // Append the new process div to the parent-processes-container
+    const parentProcessesContainer = document.querySelector('.parent-processes-container');
+    parentProcessesContainer.appendChild(newProcessDiv);
+
+    // Add delete listeners for the new process
+    addDeleteListeners();
+}
 
 // Select input fields by their IDs
 const memorySizeInput = document.getElementById('memory-size');
@@ -11,6 +61,8 @@ const coalescingHoleInput = document.getElementById('coal-hole');
 const memoryButton = document.querySelector('.mems-3 button');
 const compactionButton = document.querySelector('.comp-4 button');
 const coalescingButton = document.querySelector('.hole-5 button');
+
+
 
 // Event listener for memory size input
 memoryButton.addEventListener('click', function() {
@@ -268,7 +320,7 @@ memoryButton.addEventListener('click', function() {
 
         // Create the <p> tag for memory size
         const memoryText = document.createElement('p');
-        memoryText.textContent = `${memorySize} KB`;
+        memoryText.textContent = `${memorySize} KB remaining`;
 
         // Append the <p> tag to the memory div
         memoryDiv.appendChild(memoryText);
@@ -301,14 +353,78 @@ const colors = [
   '#fbf8cc' 
 ];
 
-// Initialize an index to keep track of which process to decrement
+let coalescingHoleTime = 0; // Track the coalescing time
+
+// Event listener for coalescing hole input
+coalescingButton.addEventListener('click', function () {
+    coalescingHoleTime = parseInt(coalescingHoleInput.value) || 0; // Set to 0 if invalid input
+    console.log('Coalescing Hole Time:', coalescingHoleTime);
+});
+
+// Function to check and combine adjacent holes or memory-div one step at a time
+function coalesceAdjacentHoles() {
+    const blocks = simulationContainer.children;
+    let holesCombined = false; // Track if any holes were combined
+
+    // Iterate over the blocks and find the first adjacent pair of holes or memory-div
+    for (let i = 0; i < blocks.length - 1; i++) {
+        const currentBlock = blocks[i];
+        const nextBlock = blocks[i + 1];
+
+        // Check if both current and next blocks are holes or memory-div
+        if ((currentBlock.classList.contains('hole') || currentBlock.classList.contains('memory-div')) &&
+            (nextBlock.classList.contains('hole') || nextBlock.classList.contains('memory-div'))) {
+
+            // Combine the sizes of the current block and the next block
+            const currentSize = parseInt(currentBlock.textContent.match(/\d+/)[0]);
+            const nextSize = parseInt(nextBlock.textContent.match(/\d+/)[0]);
+
+            const combinedSize = currentSize + nextSize;
+
+            // Update the current block with the new combined size
+            currentBlock.textContent = `${combinedSize} KB remaining`;
+            currentBlock.style.height = `${(combinedSize / parseInt(memorySizeInput.value)) * 100}%`;
+
+            // Remove the next block (which is now part of the combined hole)
+            nextBlock.remove();
+
+            holesCombined = true; // Mark that we have combined a pair of holes or memory-div
+            break; // Stop after combining the first pair
+        }
+    }
+
+    return holesCombined; // Return whether any holes were combined
+}
+
+
+
 let decrementIndex = 0;
 let holeExists = false; // Track if a hole exists
 let holeSize = 0; // Store the size of the hole
 let addedProcesses = []; // Track added process names
 let holeIndex = -1; // Store the index of the hole
+let coalescingCounter = 0; // New counter for tracking coalescing clicks
 
 forwardOnceButton.addEventListener('click', function() {
+    // if (coalescingHoleTime > 0 && (timeCounter % coalescingHoleTime === 0) && timeCounter > 0) {
+    //     const holesCombined = coalesceAdjacentHoles();
+    //     if (holesCombined) {
+    //         return; // If holes were combined, stop and wait for the next click
+    //     }
+    // }
+
+    coalescingCounter++; // Increment the coalescing click counter
+
+    // Check if it's time to combine holes based on the coalescing time
+    if (coalescingHoleTime > 0 && coalescingCounter % coalescingHoleTime === 0) {
+        const holesCombined = coalesceAdjacentHoles();
+        if (holesCombined) {
+            // Reset the coalescing counter for the next coalescing cycle
+            coalescingCounter = 0; 
+            return; // Stop further processing for this click
+        }
+    }
+
     const parentProcesses = document.querySelectorAll('.parent-processes-container .processes-container');
     const processBlocks = simulationContainer.querySelectorAll('.process-block');
 

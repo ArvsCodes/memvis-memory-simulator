@@ -68,8 +68,6 @@ button {
 
 .item {
   background-color: var(--base-variant);
-  box-shadow: 0px 0px 10px var(--primary-color);
-  border: 1px solid var(--primary-color);
   border-radius: 12px;
 
   margin: 0;
@@ -330,8 +328,13 @@ button {
   transition: 0.2s;
 }
 
+.mems-3 button:hover {
+  background-color: var(--secondary-text);
+  color: var(--base-variant);
+}
+
 .mems-3 button:active {
-  opacity: 0.7;
+  opacity: 0.6;
 }
 
 .comp-4 {
@@ -374,6 +377,16 @@ button {
   font-family: "Space Grotesk";
   border: transparent;
   border-radius: 6px;
+  transition: 0.2s;
+}
+
+.comp-4 button:hover {
+  background-color: var(--secondary-text);
+  color: var(--base-variant);
+}
+
+.comp-4 button:active {
+  opacity: 0.6;
 }
 
 .hole-5 {
@@ -416,6 +429,16 @@ button {
   font-family: "Space Grotesk";
   border: transparent;
   border-radius: 6px;
+  transition: 0.2s;
+}
+
+.hole-5 button:hover {
+  background-color: var(--secondary-text);
+  color: var(--base-variant);
+}
+
+.hole-5 button:active {
+  opacity: 0.6;
 }
 
 .onef-6 {
@@ -446,7 +469,7 @@ button {
 }
 
 .onef-6:active {
-  opacity: 0.7;
+  opacity: 0.6;
 }
 
 .fullf-7 {
@@ -505,7 +528,7 @@ button {
 }
 
 .oneb-8:active {
-  opacity: 0.7;
+  opacity: 0.6;
 }
 
 .oneb-8 img {
