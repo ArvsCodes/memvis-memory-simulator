@@ -2,13 +2,22 @@ window.onload = function () {
     document.body.classList.add('fade-in');
     
     // Predefined list of processes
+    // const predefinedProcesses = [
+    //     { name: 'Job 1', size: 500, timeUnit: 3 },
+    //     { name: 'Job 2', size: 250, timeUnit: 4 },
+    //     { name: 'Job 3', size: 200, timeUnit: 5 },
+    //     { name: 'Job 4', size: 350, timeUnit: 3 },
+    //     { name: 'Job 5', size: 60, timeUnit: 5 },
+    //     { name: 'Job 6', size: 300, timeUnit: 3 }
+    // ];
+
     const predefinedProcesses = [
-        { name: 'Job 1', size: 500, timeUnit: 3 },
-        { name: 'Job 2', size: 250, timeUnit: 4 },
-        { name: 'Job 3', size: 200, timeUnit: 5 },
-        { name: 'Job 4', size: 350, timeUnit: 3 },
-        { name: 'Job 5', size: 60, timeUnit: 5 },
-        { name: 'Job 6', size: 300, timeUnit: 3 }
+        { name: 'Job 1', size: 200, timeUnit: 5 },
+        { name: 'Job 2', size: 350, timeUnit: 3 },
+        { name: 'Job 3', size: 400, timeUnit: 2 },
+        { name: 'Job 4', size: 80, timeUnit: 4 },
+        { name: 'Job 5', size: 170, timeUnit: 4 },
+        { name: 'Job 6', size: 310, timeUnit: 6 }
     ];
   
     // Automatically add these predefined processes to the list
@@ -166,10 +175,10 @@ function deleteProcess(event) {
     });
   }
 
-  // Function to check and combine adjacent holes or memory-div one step at a time
+// Function to check and combine adjacent holes or memory-div one step at a time
 function coalesceAdjacentHoles() {
     const blocks = simulationContainer.children;
-    let holesCombined = false; // Track if any holes were combined
+    let holesCombined = false;
 
     // Iterate over the blocks and find the first adjacent pair of holes or memory-div
     for (let i = 0; i < blocks.length - 1; i++) {
@@ -180,7 +189,6 @@ function coalesceAdjacentHoles() {
         if ((currentBlock.classList.contains('hole') || currentBlock.classList.contains('memory-div')) &&
             (nextBlock.classList.contains('hole') || nextBlock.classList.contains('memory-div'))) {
 
-            // Combine the sizes of the current block and the next block
             const currentSize = parseInt(currentBlock.textContent.match(/\d+/)[0]);
             const nextSize = parseInt(nextBlock.textContent.match(/\d+/)[0]);
 
@@ -190,15 +198,18 @@ function coalesceAdjacentHoles() {
             currentBlock.textContent = `${combinedSize} KB remaining`;
             currentBlock.style.height = `${(combinedSize / parseInt(memorySizeInput.value)) * 100}%`;
 
-            // Remove the next block (which is now part of the combined hole)
+            // Update holeSize to reflect the combined size
+            holeSize = combinedSize;
+
+            // Remove the next block
             nextBlock.remove();
 
-            holesCombined = true; // Mark that we have combined a pair of holes or memory-div
-            break; // Stop after combining the first pair
+            holesCombined = true;
+            break;
         }
     }
 
-    return holesCombined; // Return whether any holes were combined
+    return holesCombined;
 }
 
 // Function to get the current state of the memory container
@@ -332,19 +343,7 @@ function combineHoles(holeBlocks) {
 memoryButton.addEventListener('click', function() {
     const memorySize = memorySizeInput.value;
     console.log('Memory Size:', memorySize);
-  });
-  
-  // Event listener for compaction time input
-  compactionButton.addEventListener('click', function() {
-    const compactionTime = compactionTimeInput.value;
-    console.log('Compaction Time:', compactionTime);
-  });
-  
-  // Event listener for coalescing hole input
-  coalescingButton.addEventListener('click', function() {
-    const coalescingHole = coalescingHoleInput.value;
-    console.log('Coalescing Hole Time:', coalescingHole);
-  });
+});
   
   // Event listener to handle adding a process
   addProcessButton.addEventListener('click', function() {
@@ -452,6 +451,12 @@ memoryButton.addEventListener('click', function() {
           simulationContainer.appendChild(memoryDiv);
       }
   });
+
+// Event listener for compaction time input
+compactionButton.addEventListener('click', function() {
+    compactionTime = parseInt(compactionTimeInput.value) || 0; // Get the compaction time input
+    console.log('Compaction Time:', compactionTime);
+});
   
   // Event listener for coalescing hole input
   coalescingButton.addEventListener('click', function () {
@@ -634,7 +639,7 @@ memoryButton.addEventListener('click', function() {
               }
           }
       }
-  
+
       // Decrement time unit for process blocks
       if (processBlocks.length > 0) {
           const currentBlock = processBlocks[decrementIndex];
@@ -725,11 +730,5 @@ memoryButton.addEventListener('click', function() {
           backwardFullButton.classList.remove('active'); // Optionally revert to inactive
       }
   });     
-  
-  // Event listener for compaction time input
-  compactionButton.addEventListener('click', function() {
-      compactionTime = parseInt(compactionTimeInput.value) || 0; // Get the compaction time input
-      console.log('Compaction Time:', compactionTime);
-  });
 
 // EVENT LISTENERS ----------------------------------------------------------------------------------------
