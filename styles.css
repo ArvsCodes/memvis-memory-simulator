@@ -609,7 +609,7 @@ button {
 }
 
 .chart-11 .chart-container {
-  margin: 0 0 0 6px;
+  margin: 0 0 0 9px;
   padding: 0;
 
   display: flex;
@@ -648,7 +648,7 @@ button {
   height: 30px;
   
   border: 2px solid var(--text-color);
-  border-radius: 6px;
+  border-radius: 8px;
 }
 
 .sim-12 {
