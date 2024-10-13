@@ -2,23 +2,23 @@ window.onload = function () {
     document.body.classList.add('fade-in');
     
     // Predefined list of processes
-    // const predefinedProcesses = [
-    //     { name: 'Job 1', size: 500, timeUnit: 3 },
-    //     { name: 'Job 2', size: 250, timeUnit: 4 },
-    //     { name: 'Job 3', size: 200, timeUnit: 5 },
-    //     { name: 'Job 4', size: 350, timeUnit: 3 },
-    //     { name: 'Job 5', size: 60, timeUnit: 5 },
-    //     { name: 'Job 6', size: 300, timeUnit: 3 }
-    // ];
-
     const predefinedProcesses = [
-        { name: 'Job 1', size: 200, timeUnit: 5 },
-        { name: 'Job 2', size: 350, timeUnit: 3 },
-        { name: 'Job 3', size: 400, timeUnit: 2 },
-        { name: 'Job 4', size: 80, timeUnit: 4 },
-        { name: 'Job 5', size: 170, timeUnit: 4 },
-        { name: 'Job 6', size: 310, timeUnit: 6 }
+        { name: 'Job 1', size: 500, timeUnit: 3 },
+        { name: 'Job 2', size: 250, timeUnit: 4 },
+        { name: 'Job 3', size: 200, timeUnit: 5 },
+        { name: 'Job 4', size: 350, timeUnit: 3 },
+        { name: 'Job 5', size: 60, timeUnit: 5 },
+        { name: 'Job 6', size: 300, timeUnit: 3 }
     ];
+
+    // const predefinedProcesses = [
+    //     { name: 'Job 1', size: 200, timeUnit: 5 },
+    //     { name: 'Job 2', size: 350, timeUnit: 3 },
+    //     { name: 'Job 3', size: 400, timeUnit: 2 },
+    //     { name: 'Job 4', size: 80, timeUnit: 4 },
+    //     { name: 'Job 5', size: 170, timeUnit: 4 },
+    //     { name: 'Job 6', size: 310, timeUnit: 6 }
+    // ];
   
     // Automatically add these predefined processes to the list
     predefinedProcesses.forEach(process => {
@@ -640,41 +640,59 @@ forwardOnceButton.addEventListener('click', function() {
         }
     }
 
-
-    // Decrement time unit for process blocks
+    // Decrement time unit for process blocks in a round-robin fashion
     if (processBlocks.length > 0) {
-        const currentBlock = processBlocks[decrementIndex];
-        const timeUnitMatch = currentBlock.textContent.match(/\((\d+) seconds left\)/);
+        let processedBlocks = 0; // Count how many blocks have been processed
 
-        if (timeUnitMatch) {
-            let timeUnit = parseInt(timeUnitMatch[1]);
+        // Loop until a block is decremented or all blocks are processed
+        while (processedBlocks < processBlocks.length) {
+            const currentBlock = processBlocks[decrementIndex];
+            const timeUnitMatch = currentBlock.textContent.match(/\((\d+) seconds left\)/);
 
-            if (timeUnit > 0) {
-                timeUnit--; // Decrement time unit
-                currentBlock.textContent = currentBlock.textContent.replace(/\((\d+) seconds left\)/, `(${timeUnit} seconds left)`);
+            if (timeUnitMatch) {
+                let timeUnit = parseInt(timeUnitMatch[1]);
+
+                if (timeUnit > 0) {
+                    timeUnit--; // Decrement time unit
+                    currentBlock.textContent = currentBlock.textContent.replace(/\((\d+) seconds left\)/, `(${timeUnit} seconds left)`);
+
+                    // If time unit becomes 0 after decrement, immediately convert to a hole
+                    if (timeUnit === 0) {
+                        const processSize = parseInt(currentBlock.textContent.match(/\((\d+) KB\)/)[1]);
+                        const holeDiv = document.createElement('div');
+                        holeDiv.classList.add('hole');
+                        holeDiv.style.height = currentBlock.style.height;
+                        holeDiv.style.backgroundColor = 'var(--primary-color)';
+                        holeDiv.style.color = 'var(--text-color)';
+                        holeDiv.textContent = `${processSize} KB remaining`;
+
+                        // Replace the process block with the new hole
+                        simulationContainer.replaceChild(holeDiv, currentBlock);
+                        holeExists = true;
+                        holeSize = processSize;
+                        holeIndex = decrementIndex;
+
+                        // Update the processBlocks list after replacing with a hole
+                        processBlocks = Array.from(simulationContainer.querySelectorAll('.process-block'));
+                    }
+
+                    // Move to the next block in the sequence
+                    decrementIndex = (decrementIndex + 1) % processBlocks.length;
+                    break; // Exit the loop once a time unit is decremented
+                }
             }
 
-            if (timeUnit === 0) {
-                const processSize = parseInt(currentBlock.textContent.match(/\((\d+) KB\)/)[1]);
-                const holeDiv = document.createElement('div');
-                holeDiv.classList.add('hole');
-                holeDiv.style.height = currentBlock.style.height;
-                holeDiv.style.backgroundColor = 'var(--primary-color)';
-                holeDiv.style.color = 'var(--text-color)';
-                holeDiv.textContent = `${processSize} KB remaining`;
+            // Move to the next block
+            decrementIndex = (decrementIndex + 1) % processBlocks.length;
+            processedBlocks++; // Increment the count of processed blocks
 
-                simulationContainer.replaceChild(holeDiv, currentBlock);
-                holeExists = true;
-                holeSize = processSize;
-                holeIndex = decrementIndex;
-            }
-
-            decrementIndex++;
-            if (decrementIndex >= processBlocks.length) {
+            // If all blocks have been processed without finding a valid one, reset the index
+            if (processedBlocks === processBlocks.length) {
                 decrementIndex = 0;
             }
         }
-    }
+    }   
+    
 });
 
 // Event listener for backward button
