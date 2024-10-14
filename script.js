@@ -367,6 +367,15 @@ function stopAutoForwardingIfFullSizeHoleDetected() {
 
     // If a full-size hole is detected, stop auto-forwarding immediately
     if (fullSizeHole) {
+
+        // Get the latest time unit from the last appended cell in the chart
+        const latestCell = chartContainer.lastElementChild;
+        const latestTimeUnit = latestCell ? latestCell.querySelector('.tu').textContent : '0';
+
+        // Update the output container with the latest time unit
+        const ftuOutputContainer = document.querySelector('.ftu');
+        ftuOutputContainer.innerHTML = `${latestTimeUnit}`;
+
         if (forwardIntervalId !== null) {
             clearInterval(forwardIntervalId);
             forwardIntervalId = null;
@@ -506,6 +515,9 @@ coalescingButton.addEventListener('click', function () {
 });
 
 forwardOnceButton.addEventListener('click', function() {
+    const ftuOutputContainer = document.querySelector('.ftu');
+    ftuOutputContainer.innerHTML = '...'; // Initialize with "..."
+
     if (isCompacting) return; // If compaction is in progress, skip further actions
 
     // Store the current state before changes
@@ -743,21 +755,21 @@ forwardOnceButton.addEventListener('click', function() {
         }
     }   
 
-        // Check if the simulation container has a hole equal to the memory size
-        const memorySize = parseInt(memorySizeInput.value);
-        const fullSizeHole = Array.from(simulationContainer.children).some(block => {
-            return block.classList.contains('hole') && parseInt(block.textContent) === memorySize;
-        });
-    
-        // If a full-size hole is detected, stop auto-forwarding
-        if (fullSizeHole) {
-            if (forwardIntervalId !== null) {
-                clearInterval(forwardIntervalId);
-                forwardIntervalId = null;
-                forwardFullImage.src = 'images/player-skip-forward.svg'; // Update the button image
-                forwardFullButton.classList.remove('active'); // Indicate auto-forwarding is inactive
-            }
+    // Check if the simulation container has a hole equal to the memory size
+    const memorySize = parseInt(memorySizeInput.value);
+    const fullSizeHole = Array.from(simulationContainer.children).some(block => {
+        return block.classList.contains('hole') && parseInt(block.textContent) === memorySize;
+    });
+
+    // If a full-size hole is detected, stop auto-forwarding
+    if (fullSizeHole) {
+        if (forwardIntervalId !== null) {
+            clearInterval(forwardIntervalId);
+            forwardIntervalId = null;
+            forwardFullImage.src = 'images/player-skip-forward.svg'; // Update the button image
+            forwardFullButton.classList.remove('active'); // Indicate auto-forwarding is inactive
         }
+    }
 });
 
 // Event listener for backward button

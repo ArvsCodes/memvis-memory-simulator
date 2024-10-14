@@ -595,9 +595,19 @@ button {
 .ftu-10 .ftu-output-container {
   min-width: 48px;
   min-height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   background-color: var(--primary-color);
   color: var(--secondary-text);
   border-radius: 6px;
+}
+
+.ftu-10 .ftu {
+  margin: 0;
+  padding: 0;
+  color: var(--secondary-text);
+  font-size: 15px;
 }
 
 .chart-11 {
