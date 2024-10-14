@@ -347,6 +347,23 @@ function combineHoles(holeBlocks) {
     }
 }
 
+function stopAutoForwardingIfFullSizeHoleDetected() {
+    const memorySize = parseInt(memorySizeInput.value);
+    const fullSizeHole = Array.from(simulationContainer.children).some(block => {
+        return block.classList.contains('hole') && parseInt(block.textContent) === memorySize;
+    });
+
+    // If a full-size hole is detected, stop auto-forwarding immediately
+    if (fullSizeHole) {
+        if (forwardIntervalId !== null) {
+            clearInterval(forwardIntervalId);
+            forwardIntervalId = null;
+            forwardFullImage.src = 'images/player-skip-forward.svg'; // Update the button image
+            forwardFullButton.classList.remove('active'); // Indicate auto-forwarding is inactive
+        }
+    }
+}
+
 // FUNCTIONS ----------------------------------------------------------------------------------------
 
 // EVENT LISTENERS ----------------------------------------------------------------------------------------
@@ -501,6 +518,9 @@ forwardOnceButton.addEventListener('click', function() {
                 forwardFullImage.src = 'images/player-pause.svg'; // Update the button image
                 forwardFullButton.classList.add('active'); // Indicate auto-forwarding is active
             }
+
+            // Check for a full-size hole immediately after storage compaction
+            stopAutoForwardingIfFullSizeHoleDetected();
         });
 
         // Temporarily disable auto-forwarding during compaction
@@ -521,6 +541,9 @@ forwardOnceButton.addEventListener('click', function() {
         if (holesCombined) {
             coalescingCounter = 0;
             isCoalescing = false; // Reset flag after coalescing is done
+            
+            // Check for a full-size hole immediately after storage compaction
+            stopAutoForwardingIfFullSizeHoleDetected();
             return; // Stop further processing for this click
         }
 
@@ -657,6 +680,9 @@ forwardOnceButton.addEventListener('click', function() {
                 decrementIndex = 0;
             }
             holeIndex = -1;
+
+            // Check for a full-size hole immediately after storage compaction
+            stopAutoForwardingIfFullSizeHoleDetected();
             return;
         }
     }
@@ -695,6 +721,9 @@ forwardOnceButton.addEventListener('click', function() {
 
                         // Update the processBlocks list after replacing with a hole
                         processBlocks = Array.from(simulationContainer.querySelectorAll('.process-block'));
+
+                        // Check for a full-size hole immediately after storage compaction
+                        stopAutoForwardingIfFullSizeHoleDetected();
                     }
 
                     // Move to the next block in the sequence
@@ -714,6 +743,21 @@ forwardOnceButton.addEventListener('click', function() {
         }
     }   
 
+        // Check if the simulation container has a hole equal to the memory size
+        const memorySize = parseInt(memorySizeInput.value);
+        const fullSizeHole = Array.from(simulationContainer.children).some(block => {
+            return block.classList.contains('hole') && parseInt(block.textContent) === memorySize;
+        });
+    
+        // If a full-size hole is detected, stop auto-forwarding
+        if (fullSizeHole) {
+            if (forwardIntervalId !== null) {
+                clearInterval(forwardIntervalId);
+                forwardIntervalId = null;
+                forwardFullImage.src = 'images/player-skip-forward.svg'; // Update the button image
+                forwardFullButton.classList.remove('active'); // Indicate auto-forwarding is inactive
+            }
+        }
 });
 
 // Event listener for backward button
