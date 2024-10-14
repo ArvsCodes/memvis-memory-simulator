@@ -214,6 +214,18 @@ function coalesceAdjacentHoles() {
     return holesCombined;
 }
 
+// Function to check and combine adjacent holes or memory-div based on current time unit
+function coalesceAdjacentHolesIfTimeUnitIsValid() {
+    const lastCell = chartContainer.lastElementChild;
+    const currentTimeUnit = lastCell ? parseInt(lastCell.querySelector('.tu').textContent) : 0;
+
+    // Only coalesce if the current time unit is a multiple of the coalescing time
+    if (coalescingHoleTime > 0 && currentTimeUnit > 0 && currentTimeUnit % coalescingHoleTime === 0) {
+        return coalesceAdjacentHoles(); // Call the existing function to combine holes
+    }
+    return false; // No holes were combined
+}
+
 // Function to get the current state of the memory container
 function getCurrentMemoryState() {
     const memoryState = [];
@@ -530,24 +542,12 @@ forwardOnceButton.addEventListener('click', function() {
         }
         return;
     }
-
-    coalescingCounter++; // Increment the coalescing click counter
-
-    // Check if it's time to combine holes based on the coalescing time
-    if (coalescingHoleTime > 0 && coalescingCounter % coalescingHoleTime === 0) {
-        isCoalescing = true; // Set flag to indicate coalescing is happening
-
-        const holesCombined = coalesceAdjacentHoles();
-        if (holesCombined) {
-            coalescingCounter = 0;
-            isCoalescing = false; // Reset flag after coalescing is done
-            
-            // Check for a full-size hole immediately after storage compaction
-            stopAutoForwardingIfFullSizeHoleDetected();
-            return; // Stop further processing for this click
-        }
-
-        isCoalescing = false; // Reset flag if no coalescing occurred
+    
+    // Check if it's time to combine holes based on the current time unit
+    if (coalesceAdjacentHolesIfTimeUnitIsValid()) {
+        // If holes were combined, check for full-size hole
+        stopAutoForwardingIfFullSizeHoleDetected();
+        return; // Exit the function since coalescing has occurred
     }
 
     // Coalescing is finished, continue normal process
