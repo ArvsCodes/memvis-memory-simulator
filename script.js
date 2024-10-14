@@ -2,23 +2,23 @@ window.onload = function () {
     document.body.classList.add('fade-in');
     
     // Predefined list of processes
-    const predefinedProcesses = [
-        { name: 'Job 1', size: 500, timeUnit: 3 },
-        { name: 'Job 2', size: 250, timeUnit: 4 },
-        { name: 'Job 3', size: 200, timeUnit: 5 },
-        { name: 'Job 4', size: 350, timeUnit: 3 },
-        { name: 'Job 5', size: 60, timeUnit: 5 },
-        { name: 'Job 6', size: 300, timeUnit: 3 }
-    ];
-
     // const predefinedProcesses = [
-    //     { name: 'Job 1', size: 200, timeUnit: 5 },
-    //     { name: 'Job 2', size: 350, timeUnit: 3 },
-    //     { name: 'Job 3', size: 400, timeUnit: 2 },
-    //     { name: 'Job 4', size: 80, timeUnit: 4 },
-    //     { name: 'Job 5', size: 170, timeUnit: 4 },
-    //     { name: 'Job 6', size: 310, timeUnit: 6 }
+    //     { name: 'Job 1', size: 500, timeUnit: 3 },
+    //     { name: 'Job 2', size: 250, timeUnit: 4 },
+    //     { name: 'Job 3', size: 200, timeUnit: 5 },
+    //     { name: 'Job 4', size: 350, timeUnit: 3 },
+    //     { name: 'Job 5', size: 60, timeUnit: 5 },
+    //     { name: 'Job 6', size: 300, timeUnit: 3 }
     // ];
+
+    const predefinedProcesses = [
+        { name: 'Job 1', size: 200, timeUnit: 5 },
+        { name: 'Job 2', size: 350, timeUnit: 3 },
+        { name: 'Job 3', size: 400, timeUnit: 2 },
+        { name: 'Job 4', size: 80, timeUnit: 4 },
+        { name: 'Job 5', size: 170, timeUnit: 4 },
+        { name: 'Job 6', size: 310, timeUnit: 4 }
+    ];
   
     // Automatically add these predefined processes to the list
     predefinedProcesses.forEach(process => {
@@ -118,8 +118,9 @@ const backwardFullImage = backwardFullButton.querySelector('img'); // Get the im
 
 // Variable to keep track of the interval for auto-backwarding
 let backwardIntervalId = null;
-
+let isCompacting = false; // Track if compaction is in progress
 let compactionTime = 0; // Variable to store the compaction time input
+
 
 // DECLARATIONS ----------------------------------------------------------------------------------------
 
@@ -227,89 +228,95 @@ function getCurrentMemoryState() {
 
 // Function to perform compaction (largest block first, then combine holes)
 function performStorageCompaction() {
-    const blocks = Array.from(simulationContainer.children);
+    return new Promise((resolve) => {
+        const blocks = Array.from(simulationContainer.children);
 
-    // Separate process blocks and holes/memory-div
-    let processBlocks = [];
-    let holeBlocks = [];
-
-    blocks.forEach(block => {
-        if (block.classList.contains('process-block')) {
-            processBlocks.push(block);
-        } else if (block.classList.contains('hole') || block.classList.contains('memory-div')) {
-            holeBlocks.push(block);
-        }
-    });
-
-    // Sort process blocks from largest to smallest size
-    processBlocks.sort((a, b) => {
-        const sizeA = parseInt(a.textContent.match(/\((\d+) KB\)/)[1]);
-        const sizeB = parseInt(b.textContent.match(/\((\d+) KB\)/)[1]);
-        return sizeB - sizeA; // Sort largest to smallest
-    });
-
-    let currentBlockIndex = 0;
-
-    function moveNextBlock() {
-        // Check if we still have blocks to move
-        if (currentBlockIndex < processBlocks.length) {
-            const block = processBlocks[currentBlockIndex];
-
-            // Move the block to the top of the container but below the previous largest block
-            const firstHoleOrSmallerBlock = Array.from(simulationContainer.children).find(child => 
-                child.classList.contains('hole') || child.classList.contains('memory-div') || 
-                parseInt(child.textContent.match(/\((\d+) KB\)/)?.[1]) < parseInt(block.textContent.match(/\((\d+) KB\)/)[1])
-            );
-
-            if (firstHoleOrSmallerBlock) {
-                simulationContainer.insertBefore(block, firstHoleOrSmallerBlock);
-            } else {
-                // If no smaller blocks or holes found, place the block at the end
-                simulationContainer.appendChild(block);
+        // Separate process blocks and holes/memory-div
+        let processBlocks = [];
+        let holeBlocks = [];
+    
+        blocks.forEach(block => {
+            if (block.classList.contains('process-block')) {
+                processBlocks.push(block);
+            } else if (block.classList.contains('hole') || block.classList.contains('memory-div')) {
+                holeBlocks.push(block);
             }
-
-            currentBlockIndex++;
-
-            // Move the next block after a delay
-            setTimeout(() => {
-                // Add a new cell to the chart AFTER the block has been moved
-                addCellToChart(); 
-                moveNextBlock(); // Call for the next block movement
-            }, 1000); // Adjust this delay if needed
-            
-        } else {
-            // All blocks have been moved, now combine and place holes
-            combineHoles(holeBlocks);
+        });
+    
+        // Sort process blocks from largest to smallest size
+        processBlocks.sort((a, b) => {
+            const sizeA = parseInt(a.textContent.match(/\((\d+) KB\)/)[1]);
+            const sizeB = parseInt(b.textContent.match(/\((\d+) KB\)/)[1]);
+            return sizeB - sizeA; // Sort largest to smallest
+        });
+    
+        let currentBlockIndex = 0;
+    
+        function moveNextBlock() {
+            // Check if we still have blocks to move
+            if (currentBlockIndex < processBlocks.length) {
+                const block = processBlocks[currentBlockIndex];
+    
+                // Move the block to the top of the container but below the previous largest block
+                const firstHoleOrSmallerBlock = Array.from(simulationContainer.children).find(child => 
+                    child.classList.contains('hole') || child.classList.contains('memory-div') || 
+                    parseInt(child.textContent.match(/\((\d+) KB\)/)?.[1]) < parseInt(block.textContent.match(/\((\d+) KB\)/)[1])
+                );
+    
+                if (firstHoleOrSmallerBlock) {
+                    simulationContainer.insertBefore(block, firstHoleOrSmallerBlock);
+                } else {
+                    // If no smaller blocks or holes found, place the block at the end
+                    simulationContainer.appendChild(block);
+                }
+    
+                currentBlockIndex++;
+    
+                // Move the next block after a delay
+                setTimeout(() => {
+                    // Add a new cell to the chart AFTER the block has been moved
+                    addCellToChart(); 
+                    moveNextBlock(); // Call for the next block movement
+                }, 1000); // Adjust this delay if needed
+                
+            } else {
+                // All blocks have been moved, now combine and place holes
+                combineHoles(holeBlocks);
+            }
         }
-    }
+    
+        // Function to add a new cell to the chart without affecting time units
+        function addCellToChart() {
+            // Create a new cell-container div
+            const newCellContainer = document.createElement('div');
+            newCellContainer.classList.add('cell-container');
+    
+            // Create the inner content for the new cell
+            const newCell = document.createElement('div');
+            newCell.classList.add('cell');
+            newCell.innerHTML = `<p>J1</p>`; // Change 'J1' as needed for uniqueness
+    
+            const timeUnit = document.createElement('p');
+            timeUnit.classList.add('tu');
+            timeUnit.textContent = timeCounter; // Set the time unit as the current counter value
+    
+            // Append the new elements to the cell-container
+            newCellContainer.appendChild(newCell);
+            newCellContainer.appendChild(timeUnit);
+    
+            // Append the new cell-container to the chart-container
+            chartContainer.appendChild(newCellContainer);
+    
+            // Increment the counter for the next time unit
+            timeCounter++;
+        }
+    
+        moveNextBlock(); // Start moving blocks
 
-    // Function to add a new cell to the chart without affecting time units
-    function addCellToChart() {
-        // Create a new cell-container div
-        const newCellContainer = document.createElement('div');
-        newCellContainer.classList.add('cell-container');
-
-        // Create the inner content for the new cell
-        const newCell = document.createElement('div');
-        newCell.classList.add('cell');
-        newCell.innerHTML = `<p>J1</p>`; // Change 'J1' as needed for uniqueness
-
-        const timeUnit = document.createElement('p');
-        timeUnit.classList.add('tu');
-        timeUnit.textContent = timeCounter; // Set the time unit as the current counter value
-
-        // Append the new elements to the cell-container
-        newCellContainer.appendChild(newCell);
-        newCellContainer.appendChild(timeUnit);
-
-        // Append the new cell-container to the chart-container
-        chartContainer.appendChild(newCellContainer);
-
-        // Increment the counter for the next time unit
-        timeCounter++;
-    }
-
-    moveNextBlock(); // Start moving blocks
+        setTimeout(() => {
+            resolve(); // Indicate compaction is done
+        }, 3000); // Simulate compaction delay
+    });
 }
 
 // Function to combine holes after all blocks have been moved
@@ -470,25 +477,39 @@ coalescingButton.addEventListener('click', function () {
 });
 
 forwardOnceButton.addEventListener('click', function() {
+    if (isCompacting) return; // If compaction is in progress, skip further actions
 
     // Store the current state before changes
     memoryHistory.push(getCurrentMemoryState());
 
-    // Get the current time unit from the last cell in the chart
     const lastCell = chartContainer.lastElementChild;
-    const currentTimeUnit = lastCell ? parseInt(lastCell.querySelector('.tu').textContent) : 0; // Default to 0 if no cells
+    const currentTimeUnit = lastCell ? parseInt(lastCell.querySelector('.tu').textContent) : 0;
 
-    if (isCoalescing) {
-        return; // If coalescing is in progress, skip all other operations
-    }
+    if (isCoalescing) return;
 
-    // Check if it's time for storage compaction based on timeUnit
+    // Track whether auto-forwarding was active before compaction
+    let wasAutoForwarding = forwardIntervalId !== null;
+
     if (currentTimeUnit > 0 && currentTimeUnit % compactionTime === 0) {
-        // Perform storage compaction only, and do nothing else
-        performStorageCompaction();
-        return; // Stop further processing for this click
-    }
+        isCompacting = true; // Set the compaction flag
+        performStorageCompaction().then(() => {
+            isCompacting = false; // Reset the compaction flag
 
+            // Resume auto-forwarding if it was active before compaction
+            if (wasAutoForwarding) {
+                forwardIntervalId = setInterval(() => forwardOnceButton.click(), 1000);
+                forwardFullImage.src = 'images/player-pause.svg'; // Update the button image
+                forwardFullButton.classList.add('active'); // Indicate auto-forwarding is active
+            }
+        });
+
+        // Temporarily disable auto-forwarding during compaction
+        if (forwardIntervalId !== null) {
+            clearInterval(forwardIntervalId);
+            forwardIntervalId = null;
+        }
+        return;
+    }
 
     coalescingCounter++; // Increment the coalescing click counter
 
@@ -640,7 +661,7 @@ forwardOnceButton.addEventListener('click', function() {
         }
     }
 
-    // Decrement time unit for process blocks in a round-robin fashion
+    // // Decrement time unit for process blocks
     if (processBlocks.length > 0) {
         let processedBlocks = 0; // Count how many blocks have been processed
 
@@ -692,7 +713,7 @@ forwardOnceButton.addEventListener('click', function() {
             }
         }
     }   
-    
+
 });
 
 // Event listener for backward button
@@ -709,22 +730,14 @@ backwardOnceButton.addEventListener('click', function() {
 // Event listener for the auto-forward button
 forwardFullButton.addEventListener('click', function() {
     if (forwardIntervalId === null) {
-        // If no interval is set, start auto-clicking forwardOnceButton every second
-        forwardIntervalId = setInterval(() => {
-            forwardOnceButton.click(); // Simulate the click on forwardOnceButton
-        }, 1000); // Run every second
-
-        // Change the image to player-pause.svg
+        forwardIntervalId = setInterval(() => forwardOnceButton.click(), 1000);
         forwardFullImage.src = 'images/player-pause.svg';
-        forwardFullButton.classList.add('active'); // Optionally indicate it's active
+        forwardFullButton.classList.add('active');
     } else {
-        // If the interval is already running, stop it
         clearInterval(forwardIntervalId);
-        forwardIntervalId = null; // Reset the intervalId
-
-        // Revert the image back to player-skip-forward.svg
+        forwardIntervalId = null;
         forwardFullImage.src = 'images/player-skip-forward.svg';
-        forwardFullButton.classList.remove('active'); // Optionally revert to inactive
+        forwardFullButton.classList.remove('active');
     }
 });
 
