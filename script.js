@@ -385,6 +385,31 @@ function stopAutoForwardingIfFullSizeHoleDetected() {
     }
 }
 
+function addCell() {
+    // Create a new cell-container div
+    const newCellContainer = document.createElement('div');
+    newCellContainer.classList.add('cell-container');
+
+    // Create the inner content for the new cell
+    const newCell = document.createElement('div');
+    newCell.classList.add('cell');
+    newCell.innerHTML = `<p>J1</p>`; // Change 'J1' as needed for uniqueness
+
+    const timeUnit = document.createElement('p');
+    timeUnit.classList.add('tu');
+    timeUnit.textContent = timeCounter; // Set the time unit as the current counter value
+
+    // Append the new elements to the cell-container
+    newCellContainer.appendChild(newCell);
+    newCellContainer.appendChild(timeUnit);
+
+    // Append the new cell-container to the chart-container
+    chartContainer.appendChild(newCellContainer);
+
+    // Increment the counter for the next time unit
+    timeCounter++;
+}
+
 // FUNCTIONS ----------------------------------------------------------------------------------------
 
 // EVENT LISTENERS ----------------------------------------------------------------------------------------
@@ -441,30 +466,30 @@ addProcessButton.addEventListener('click', function() {
 addDeleteListeners();
 
 // // Event listener for the trigger item
-addItem.addEventListener('click', function() {
-    // Create a new cell-container div
-    const newCellContainer = document.createElement('div');
-    newCellContainer.classList.add('cell-container');
+// addItem.addEventListener('click', function() {
+//     // Create a new cell-container div
+//     const newCellContainer = document.createElement('div');
+//     newCellContainer.classList.add('cell-container');
 
-    // Create the inner content for the new cell
-    const newCell = document.createElement('div');
-    newCell.classList.add('cell');
-    newCell.innerHTML = `<p>J1</p>`; // Change 'J1' as needed for uniqueness
+//     // Create the inner content for the new cell
+//     const newCell = document.createElement('div');
+//     newCell.classList.add('cell');
+//     newCell.innerHTML = `<p>J1</p>`; // Change 'J1' as needed for uniqueness
 
-    const timeUnit = document.createElement('p');
-    timeUnit.classList.add('tu');
-    timeUnit.textContent = timeCounter; // Set the time unit as the current counter value
+//     const timeUnit = document.createElement('p');
+//     timeUnit.classList.add('tu');
+//     timeUnit.textContent = timeCounter; // Set the time unit as the current counter value
 
-    // Append the new elements to the cell-container
-    newCellContainer.appendChild(newCell);
-    newCellContainer.appendChild(timeUnit);
+//     // Append the new elements to the cell-container
+//     newCellContainer.appendChild(newCell);
+//     newCellContainer.appendChild(timeUnit);
 
-    // Append the new cell-container to the chart-container
-    chartContainer.appendChild(newCellContainer);
+//     // Append the new cell-container to the chart-container
+//     chartContainer.appendChild(newCellContainer);
 
-    // Increment the counter for the next time unit
-    timeCounter++;
-});
+//     // Increment the counter for the next time unit
+//     timeCounter++;
+// });
 
 // Event listener for the remove item
 removeItem.addEventListener('click', function() {
@@ -515,6 +540,8 @@ coalescingButton.addEventListener('click', function () {
 });
 
 forwardOnceButton.addEventListener('click', function() {
+    addCell();
+
     const ftuOutputContainer = document.querySelector('.ftu');
     ftuOutputContainer.innerHTML = '...'; // Initialize with "..."
 
