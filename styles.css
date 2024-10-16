@@ -661,6 +661,19 @@ button {
   border-radius: 8px;
 }
 
+.chart-11 .cell-ch-sc {
+  background-color: var(--secondary-text);
+  border-color: var(--secondary-text);
+}
+
+.chart-11 .cell-ch-sc p {
+  color: var(--base-color);
+}
+
+.chart-11 .time-ch-sc {
+  color: var(--secondary-text); /* Dark red text color for CH and SC */
+}
+
 .sim-12 {
   margin: 0;
   padding: 0 20px;

@@ -359,6 +359,45 @@ function stopAutoForwardingIfFullSizeHoleDetected() {
 }
 
 // Function to add a cell to the chart based on label
+// function addCell(label = '') {
+//     console.log(`Adding cell with label: ${label} at time: ${timeCounter}`);
+
+//     const newCellContainer = document.createElement('div');
+//     newCellContainer.classList.add('cell-container');
+
+//     const newCell = document.createElement('div');
+//     newCell.classList.add('cell');
+
+//     // Determine the content of newCell based on the provided label
+//     if (label === 'CH') {
+//         // Coalescing holes
+//         newCell.innerHTML = `<p>CH</p>`;
+//         newCell.classList.add('cell-ch-sc');
+//     } else if (label === 'SC') {
+//         // Storage compaction
+//         newCell.innerHTML = `<p>SC</p>`;
+//         newCell.classList.add('cell-ch-sc');
+//     } else if (label.startsWith('J')) {
+//         // Display the P# for adding blocks or decrementing time units
+//         newCell.innerHTML = `<p>${label}</p>`;
+//     } else {
+//         // Default to J1 if no label is provided
+//         newCell.innerHTML = `<p>NA</p>`;
+//     }
+
+//     const timeUnit = document.createElement('p');
+//     timeUnit.classList.add('tu');
+//     timeUnit.textContent = timeCounter;
+
+//     newCellContainer.appendChild(newCell);
+//     newCellContainer.appendChild(timeUnit);
+//     chartContainer.appendChild(newCellContainer);
+
+//     timeCounter++;
+// }
+
+
+// Function to add a cell to the chart based on label
 function addCell(label = '') {
     console.log(`Adding cell with label: ${label} at time: ${timeCounter}`);
 
@@ -368,24 +407,29 @@ function addCell(label = '') {
     const newCell = document.createElement('div');
     newCell.classList.add('cell');
 
+    // Create the time unit paragraph
+    const timeUnit = document.createElement('p');
+    timeUnit.classList.add('tu');
+    timeUnit.textContent = timeCounter;
+
     // Determine the content of newCell based on the provided label
     if (label === 'CH') {
         // Coalescing holes
         newCell.innerHTML = `<p>CH</p>`;
+        newCell.classList.add('cell-ch-sc');
+        timeUnit.classList.add('time-ch-sc'); // Add class for different time unit style
     } else if (label === 'SC') {
         // Storage compaction
         newCell.innerHTML = `<p>SC</p>`;
+        newCell.classList.add('cell-ch-sc');
+        timeUnit.classList.add('time-ch-sc'); // Add class for different time unit style
     } else if (label.startsWith('J')) {
         // Display the P# for adding blocks or decrementing time units
         newCell.innerHTML = `<p>${label}</p>`;
     } else {
-        // Default to J1 if no label is provided
+        // Default to NA if no label is provided
         newCell.innerHTML = `<p>NA</p>`;
     }
-
-    const timeUnit = document.createElement('p');
-    timeUnit.classList.add('tu');
-    timeUnit.textContent = timeCounter;
 
     newCellContainer.appendChild(newCell);
     newCellContainer.appendChild(timeUnit);
@@ -393,6 +437,7 @@ function addCell(label = '') {
 
     timeCounter++;
 }
+
 
 // FUNCTIONS ----------------------------------------------------------------------------------------
 
