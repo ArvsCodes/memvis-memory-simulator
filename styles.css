@@ -666,12 +666,25 @@ button {
   border-color: var(--secondary-text);
 }
 
+.chart-11 .cell-na {
+  background-color: #FF8282;
+  border-color: #FF8282;
+}
+
+.chart-11 .cell-na p {
+  color: var(--base-color);
+}
+
 .chart-11 .cell-ch-sc p {
   color: var(--base-color);
 }
 
 .chart-11 .time-ch-sc {
   color: var(--secondary-text); /* Dark red text color for CH and SC */
+}
+
+.chart-11 .time-na {
+  color: #FF8282 /* Dark red text color for CH and SC */
 }
 
 .sim-12 {

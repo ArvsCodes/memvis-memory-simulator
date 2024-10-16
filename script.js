@@ -389,6 +389,8 @@ function addCell(label = '') {
     } else {
         // Default to NA if no label is provided
         newCell.innerHTML = `<p>NA</p>`;
+        newCell.classList.add('cell-na');
+        timeUnit.classList.add('time-na'); // Add class for different time unit style
     }
 
     newCellContainer.appendChild(newCell);
@@ -559,6 +561,25 @@ forwardOnceButton.addEventListener('click', function() {
     // Coalescing is finished, continue normal process
     const parentProcesses = document.querySelectorAll('.parent-processes-container .processes-container');
     let processBlocks = simulationContainer.querySelectorAll('.process-block');
+
+    // If there are no process blocks left, continue with coalescing if possible
+    if (processBlocks.length === 0) {
+        // Avoid adding "NA" at the start when the chart is empty
+        if (chartContainer.children.length > 0) {
+            // If nothing else happens (no processes added or decremented), add a placeholder cell to advance time
+            addCell('NA'); // NA stands for "No Action"
+        }
+
+        // Try coalescing again if only holes remain and the current time is a multiple of coalescingHoleTime
+        if (coalescingHoleTime > 0 && currentTimeUnit > 0 && currentTimeUnit % coalescingHoleTime === 0) {
+            if (coalesceAdjacentHoles()) {
+                // Add a cell indicating that holes were coalesced
+                addCell('CH');
+                stopAutoForwardingIfFullSizeHoleDetected();
+                return;
+            }
+        }
+    }
 
     // First: Attempt to add new process blocks if there’s available memory
     if (currentProcessIndex < parentProcesses.length) {
