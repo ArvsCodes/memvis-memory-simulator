@@ -216,8 +216,7 @@ function coalesceAdjacentHoles() {
 
 // Function to check and combine adjacent holes or memory-div based on current time unit
 function coalesceAdjacentHolesIfTimeUnitIsValid() {
-    const lastCell = chartContainer.lastElementChild;
-    const currentTimeUnit = lastCell ? parseInt(lastCell.querySelector('.tu').textContent) : 0;
+    const currentTimeUnit = timeCounter;
 
     // Only coalesce if the current time unit is a multiple of the coalescing time
     if (coalescingHoleTime > 0 && currentTimeUnit > 0 && currentTimeUnit % coalescingHoleTime === 0) {
@@ -357,45 +356,6 @@ function stopAutoForwardingIfFullSizeHoleDetected() {
         }
     }
 }
-
-// Function to add a cell to the chart based on label
-// function addCell(label = '') {
-//     console.log(`Adding cell with label: ${label} at time: ${timeCounter}`);
-
-//     const newCellContainer = document.createElement('div');
-//     newCellContainer.classList.add('cell-container');
-
-//     const newCell = document.createElement('div');
-//     newCell.classList.add('cell');
-
-//     // Determine the content of newCell based on the provided label
-//     if (label === 'CH') {
-//         // Coalescing holes
-//         newCell.innerHTML = `<p>CH</p>`;
-//         newCell.classList.add('cell-ch-sc');
-//     } else if (label === 'SC') {
-//         // Storage compaction
-//         newCell.innerHTML = `<p>SC</p>`;
-//         newCell.classList.add('cell-ch-sc');
-//     } else if (label.startsWith('J')) {
-//         // Display the P# for adding blocks or decrementing time units
-//         newCell.innerHTML = `<p>${label}</p>`;
-//     } else {
-//         // Default to J1 if no label is provided
-//         newCell.innerHTML = `<p>NA</p>`;
-//     }
-
-//     const timeUnit = document.createElement('p');
-//     timeUnit.classList.add('tu');
-//     timeUnit.textContent = timeCounter;
-
-//     newCellContainer.appendChild(newCell);
-//     newCellContainer.appendChild(timeUnit);
-//     chartContainer.appendChild(newCellContainer);
-
-//     timeCounter++;
-// }
-
 
 // Function to add a cell to the chart based on label
 function addCell(label = '') {
@@ -598,7 +558,7 @@ forwardOnceButton.addEventListener('click', function() {
 
     // Coalescing is finished, continue normal process
     const parentProcesses = document.querySelectorAll('.parent-processes-container .processes-container');
-    const processBlocks = simulationContainer.querySelectorAll('.process-block');
+    let processBlocks = simulationContainer.querySelectorAll('.process-block');
 
     // First: Attempt to add new process blocks if there’s available memory
     if (currentProcessIndex < parentProcesses.length) {
