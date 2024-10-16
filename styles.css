@@ -657,34 +657,56 @@ button {
   width: 30px;
   height: 30px;
   
-  border: 2px solid var(--text-color);
+  border: 2px solid var(--primary-color);
+  background-color: var(--primary-color);
   border-radius: 8px;
 }
 
-.chart-11 .cell-ch-sc {
-  background-color: var(--secondary-text);
-  border-color: var(--secondary-text);
+.chart-11 .cell p {
+  color: var(--secondary-text);
+}
+
+.chart-11 .time-j {
+  color: var(--secondary-text);
+}
+
+.chart-11 .cell-ch {
+  background-color: #90dbf4;
+  border-color: #90dbf4;
+}
+
+.chart-11 .cell-ch p {
+  color: var(--base-color);
+}
+
+.chart-11 .time-ch {
+  color: #90dbf4;
+}
+
+.chart-11 .cell-sc {
+  background-color: #a3c4f3;
+  border-color: #a3c4f3;
+}
+
+.chart-11 .cell-sc p {
+  color: var(--base-color);
+}
+
+.chart-11 .time-sc {
+  color: #a3c4f3;
 }
 
 .chart-11 .cell-na {
-  background-color: #FF8282;
-  border-color: #FF8282;
+  background-color: #cfbaf0;
+  border-color: #cfbaf0;
 }
 
 .chart-11 .cell-na p {
   color: var(--base-color);
 }
 
-.chart-11 .cell-ch-sc p {
-  color: var(--base-color);
-}
-
-.chart-11 .time-ch-sc {
-  color: var(--secondary-text); /* Dark red text color for CH and SC */
-}
-
 .chart-11 .time-na {
-  color: #FF8282 /* Dark red text color for CH and SC */
+  color: #cfbaf0;
 }
 
 .sim-12 {

@@ -376,16 +376,17 @@ function addCell(label = '') {
     if (label === 'CH') {
         // Coalescing holes
         newCell.innerHTML = `<p>CH</p>`;
-        newCell.classList.add('cell-ch-sc');
-        timeUnit.classList.add('time-ch-sc'); // Add class for different time unit style
+        newCell.classList.add('cell-ch');
+        timeUnit.classList.add('time-ch'); // Add class for different time unit style
     } else if (label === 'SC') {
         // Storage compaction
         newCell.innerHTML = `<p>SC</p>`;
-        newCell.classList.add('cell-ch-sc');
-        timeUnit.classList.add('time-ch-sc'); // Add class for different time unit style
+        newCell.classList.add('cell-sc');
+        timeUnit.classList.add('time-sc'); // Add class for different time unit style
     } else if (label.startsWith('J')) {
         // Display the P# for adding blocks or decrementing time units
         newCell.innerHTML = `<p>${label}</p>`;
+        timeUnit.classList.add('time-j');
     } else {
         // Default to NA if no label is provided
         newCell.innerHTML = `<p>NA</p>`;
