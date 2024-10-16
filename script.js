@@ -287,7 +287,7 @@ function performStorageCompaction() {
                 // Move the next block after a delay
                 setTimeout(() => {
                     // Add a new cell to the chart AFTER the block has been moved
-                    addCellToChart(); 
+                    addCell(); 
                     moveNextBlock(); // Call for the next block movement
                 }, 1000); // Adjust this delay if needed
                 
@@ -295,32 +295,6 @@ function performStorageCompaction() {
                 // All blocks have been moved, now combine and place holes
                 combineHoles(holeBlocks);
             }
-        }
-    
-        // Function to add a new cell to the chart without affecting time units
-        function addCellToChart() {
-            // Create a new cell-container div
-            const newCellContainer = document.createElement('div');
-            newCellContainer.classList.add('cell-container');
-    
-            // Create the inner content for the new cell
-            const newCell = document.createElement('div');
-            newCell.classList.add('cell');
-            newCell.innerHTML = `<p>J1</p>`; // Change 'J1' as needed for uniqueness
-    
-            const timeUnit = document.createElement('p');
-            timeUnit.classList.add('tu');
-            timeUnit.textContent = timeCounter; // Set the time unit as the current counter value
-    
-            // Append the new elements to the cell-container
-            newCellContainer.appendChild(newCell);
-            newCellContainer.appendChild(timeUnit);
-    
-            // Append the new cell-container to the chart-container
-            chartContainer.appendChild(newCellContainer);
-    
-            // Increment the counter for the next time unit
-            timeCounter++;
         }
     
         moveNextBlock(); // Start moving blocks
@@ -464,32 +438,6 @@ addProcessButton.addEventListener('click', function() {
   
 // Initial call to add delete listeners for any existing delete buttons
 addDeleteListeners();
-
-// // Event listener for the trigger item
-// addItem.addEventListener('click', function() {
-//     // Create a new cell-container div
-//     const newCellContainer = document.createElement('div');
-//     newCellContainer.classList.add('cell-container');
-
-//     // Create the inner content for the new cell
-//     const newCell = document.createElement('div');
-//     newCell.classList.add('cell');
-//     newCell.innerHTML = `<p>J1</p>`; // Change 'J1' as needed for uniqueness
-
-//     const timeUnit = document.createElement('p');
-//     timeUnit.classList.add('tu');
-//     timeUnit.textContent = timeCounter; // Set the time unit as the current counter value
-
-//     // Append the new elements to the cell-container
-//     newCellContainer.appendChild(newCell);
-//     newCellContainer.appendChild(timeUnit);
-
-//     // Append the new cell-container to the chart-container
-//     chartContainer.appendChild(newCellContainer);
-
-//     // Increment the counter for the next time unit
-//     timeCounter++;
-// });
 
 // Event listener for the remove item
 removeItem.addEventListener('click', function() {
