@@ -287,7 +287,7 @@ function performStorageCompaction() {
                 // Move the next block after a delay
                 setTimeout(() => {
                     // Add a new cell to the chart AFTER the block has been moved
-                    addCell(); 
+                    addCell('SC'); 
                     moveNextBlock(); // Call for the next block movement
                 }, 1000); // Adjust this delay if needed
                 
@@ -298,7 +298,6 @@ function performStorageCompaction() {
         }
     
         moveNextBlock(); // Start moving blocks
-
         setTimeout(() => {
             resolve(); // Indicate compaction is done
         }, 3000); // Simulate compaction delay
@@ -359,28 +358,39 @@ function stopAutoForwardingIfFullSizeHoleDetected() {
     }
 }
 
-function addCell() {
-    // Create a new cell-container div
+// Function to add a cell to the chart based on label
+function addCell(label = '') {
+    console.log(`Adding cell with label: ${label} at time: ${timeCounter}`);
+
     const newCellContainer = document.createElement('div');
     newCellContainer.classList.add('cell-container');
 
-    // Create the inner content for the new cell
     const newCell = document.createElement('div');
     newCell.classList.add('cell');
-    newCell.innerHTML = `<p>J1</p>`; // Change 'J1' as needed for uniqueness
+
+    // Determine the content of newCell based on the provided label
+    if (label === 'CH') {
+        // Coalescing holes
+        newCell.innerHTML = `<p>CH</p>`;
+    } else if (label === 'SC') {
+        // Storage compaction
+        newCell.innerHTML = `<p>SC</p>`;
+    } else if (label.startsWith('J')) {
+        // Display the P# for adding blocks or decrementing time units
+        newCell.innerHTML = `<p>${label}</p>`;
+    } else {
+        // Default to J1 if no label is provided
+        newCell.innerHTML = `<p>NA</p>`;
+    }
 
     const timeUnit = document.createElement('p');
     timeUnit.classList.add('tu');
-    timeUnit.textContent = timeCounter; // Set the time unit as the current counter value
+    timeUnit.textContent = timeCounter;
 
-    // Append the new elements to the cell-container
     newCellContainer.appendChild(newCell);
     newCellContainer.appendChild(timeUnit);
-
-    // Append the new cell-container to the chart-container
     chartContainer.appendChild(newCellContainer);
 
-    // Increment the counter for the next time unit
     timeCounter++;
 }
 
@@ -488,7 +498,6 @@ coalescingButton.addEventListener('click', function () {
 });
 
 forwardOnceButton.addEventListener('click', function() {
-    addCell();
 
     const ftuOutputContainer = document.querySelector('.ftu');
     ftuOutputContainer.innerHTML = '...'; // Initialize with "..."
@@ -498,8 +507,8 @@ forwardOnceButton.addEventListener('click', function() {
     // Store the current state before changes
     memoryHistory.push(getCurrentMemoryState());
 
-    const lastCell = chartContainer.lastElementChild;
-    const currentTimeUnit = lastCell ? parseInt(lastCell.querySelector('.tu').textContent) : 0;
+    const currentTimeUnit = timeCounter; // Use timeCounter to get the current time unit correctly
+    console.log(currentTimeUnit); // Log the current time unit for debugging
 
     if (isCoalescing) return;
 
@@ -508,6 +517,8 @@ forwardOnceButton.addEventListener('click', function() {
 
     if (currentTimeUnit > 0 && currentTimeUnit % compactionTime === 0) {
         isCompacting = true; // Set the compaction flag
+        // Immediately add "SC" to indicate the start of compaction
+        addCell('SC');
         performStorageCompaction().then(() => {
             isCompacting = false; // Reset the compaction flag
 
@@ -532,9 +543,12 @@ forwardOnceButton.addEventListener('click', function() {
     
     // Check if it's time to combine holes based on the current time unit
     if (coalesceAdjacentHolesIfTimeUnitIsValid()) {
+        // Add a cell with "CH" label for coalescing holes
+        addCell('CH');
         // If holes were combined, check for full-size hole
         stopAutoForwardingIfFullSizeHoleDetected();
         return; // Exit the function since coalescing has occurred
+
     }
 
     // Coalescing is finished, continue normal process
@@ -603,11 +617,15 @@ forwardOnceButton.addEventListener('click', function() {
 
                 // Increment the process index to point to the next process
                 currentProcessIndex++;
+                // Add a cell with the label of the added block
+                const processIndex = Array.from(parentProcesses).findIndex(
+                    process => process.querySelector('.user-inputs p:nth-child(1)').textContent === processName
+                );
+                addCell(`J${processIndex + 1}`);
 
                 return; // Stop here if we’ve added a process
             }
-        }
-        
+        }        
     }
 
     // Handle existing blocks or holes
@@ -668,13 +686,19 @@ forwardOnceButton.addEventListener('click', function() {
             }
             holeIndex = -1;
 
+            // Add a cell to the chart with the label based on the process added
+            const processIndex = Array.from(parentProcesses).findIndex(
+                process => process.querySelector('.user-inputs p:nth-child(1)').textContent === processName
+            );
+            addCell(`J${processIndex + 1}`); // Add the cell with the appropriate label
+
             // Check for a full-size hole immediately after storage compaction
             stopAutoForwardingIfFullSizeHoleDetected();
             return;
         }
     }
 
-    // // Decrement time unit for process blocks
+    // Decrement time unit for process blocks
     if (processBlocks.length > 0) {
         let processedBlocks = 0; // Count how many blocks have been processed
 
@@ -689,6 +713,28 @@ forwardOnceButton.addEventListener('click', function() {
                 if (timeUnit > 0) {
                     timeUnit--; // Decrement time unit
                     currentBlock.textContent = currentBlock.textContent.replace(/\((\d+) seconds left\)/, `(${timeUnit} seconds left)`);
+
+                    // Add a cell with the label of the decremented block
+                    const currentProcessNameMatch = currentBlock.textContent.match(/^(\w+ \d+)/); // Match "Job 1", "Job 2", etc.
+                    const currentProcessName = currentProcessNameMatch ? currentProcessNameMatch[0] : null;
+
+                    if (currentProcessName) {
+                        const blockIndex = Array.from(parentProcesses).findIndex(
+                            process => process.querySelector('.user-inputs p:nth-child(1)').textContent.trim() === currentProcessName
+                        );
+
+                        if (blockIndex !== -1) {
+                            addCell(`J${blockIndex + 1}`); // Add the cell with the appropriate label
+                        } else {
+                            console.error('Process not found in parent processes:', currentProcessName);
+                            // Log the list of process names for further debugging
+                            Array.from(parentProcesses).forEach((process, index) => {
+                                console.log(`Process ${index + 1}:`, process.querySelector('.user-inputs p:nth-child(1)').textContent.trim());
+                            });
+                        }
+                    } else {
+                        console.error('Could not extract process name from the current block text.');
+                    }
 
                     // If time unit becomes 0 after decrement, immediately convert to a hole
                     if (timeUnit === 0) {
@@ -728,7 +774,7 @@ forwardOnceButton.addEventListener('click', function() {
                 decrementIndex = 0;
             }
         }
-    }   
+    }
 
     // Check if the simulation container has a hole equal to the memory size
     const memorySize = parseInt(memorySizeInput.value);
