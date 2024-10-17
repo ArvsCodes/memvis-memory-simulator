@@ -121,7 +121,6 @@ let backwardIntervalId = null;
 let isCompacting = false; // Track if compaction is in progress
 let compactionTime = 0; // Variable to store the compaction time input
 
-
 // DECLARATIONS ----------------------------------------------------------------------------------------
 
 // FUNCTIONS ----------------------------------------------------------------------------------------
