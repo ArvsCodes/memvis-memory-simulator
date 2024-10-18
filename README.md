@@ -1,7 +1,7 @@
 
 <h1 align="center">
   <br>
-  <img src="images/memvis-logo-teal.svg" alt="Memvis" width="200">
+  <img src="images/memvis-logo-teal.svg" alt="Memvis" width="100">
   <br>
   Memvis
   <br>
@@ -10,12 +10,14 @@
 <h4 align="center">A first-fit based memory placement simulation program.</h4>
 
 <p align="center">
+
 ![Static Badge](https://img.shields.io/badge/JAVASCRIPT-f3e050?style=for-the-badge&logo=javascript&labelColor=black)
 ![Static Badge](https://img.shields.io/badge/CSS-4286c2?style=for-the-badge&logo=css3&logoColor=white)
 ![Static Badge](https://img.shields.io/badge/HTML-d35836?style=for-the-badge&logo=html5&logoColor=white)
+
 </p>
 
-<img src="images/full-program.png" width="80%" align="center">
+<img src="images/full-program.png" width="100%" align="center">
 
 ## Key Features
 
