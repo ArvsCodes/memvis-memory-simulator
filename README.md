@@ -7,11 +7,11 @@
   <br>
 </h1>
 
-<h4 align="center">A first-fit based memory placement simulation program.</h4>
+<h5 align="center">Memvis is an interactive memory visualization tool that simulates memory allocation using the first-fit strategy. It provides real-time visualization of memory blocks, holes, and process states, allowing users to observe dynamic memory management, including compaction and hole coalescing.</h5>
 
 <div align="center">
 
-  ![Static Badge](https://img.shields.io/badge/JAVASCRIPT-f3e050?style=for-the-badge&logo=javascript&labelColor=black)
+  ![Static Badge](https://img.shields.io/badge/JAVASCRIPT-f3e050?style=for-the-badge&logo=javascript&logoColor=black)
   ![Static Badge](https://img.shields.io/badge/CSS-4286c2?style=for-the-badge&logo=css3&logoColor=white)
   ![Static Badge](https://img.shields.io/badge/HTML-d35836?style=for-the-badge&logo=html5&logoColor=white)
 
