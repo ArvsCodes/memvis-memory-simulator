@@ -7,7 +7,7 @@
   <br>
 </h1>
 
-<h5 align="center">Memvis is an interactive memory visualization tool that simulates memory allocation using the first-fit strategy. It provides real-time visualization of memory blocks, holes, and process states, allowing users to observe dynamic memory management, including compaction and hole coalescing.</h5>
+<h4 align="center">Memvis is an interactive memory visualization tool that simulates memory allocation using the first-fit strategy.</h4>
 
 <div align="center">
 
