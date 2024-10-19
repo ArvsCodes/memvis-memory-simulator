@@ -25,7 +25,7 @@ If you find Memvis interesting, please consider giving a star on GitHub. Your su
 
 Thank you for your support! 🌟
 
-## Key Features
+## 🔑 Key Features
 
 * Interactive Memory Visualization
   - Simulate memory allocation and deallocation using dynamic, visual representations of memory blocks.
