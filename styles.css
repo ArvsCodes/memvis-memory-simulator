@@ -75,6 +75,9 @@ button {
 }
 
 .memvis-1 {
+  margin: 0;
+  padding: 0;
+
   grid-row: 1 / 4;
   grid-column: 1 / 15;
   background-color: var(--base-color);
@@ -85,9 +88,6 @@ button {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-
-  margin: 0;
-  padding: 0;
 }
 
 .memvis-1 h1 {

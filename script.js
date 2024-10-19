@@ -83,11 +83,9 @@ let backwardIntervalId = null;
 
 // add a process to the list
 function addProcessToList(processName, processSize, processTU) {
-    // Create the new process div (processes-container)
     const newProcessDiv = document.createElement('div');
     newProcessDiv.classList.add('processes-container');
 
-    // Create the user-inputs div
     const userInputsDiv = document.createElement('div');
     userInputsDiv.classList.add('user-inputs');
     userInputsDiv.innerHTML = `
@@ -96,31 +94,26 @@ function addProcessToList(processName, processSize, processTU) {
         <p>${processTU}</p>
     `;
 
-    // Create the edit-del-container div
     const editDelDiv = document.createElement('div');
     editDelDiv.classList.add('edit-del-container');
     editDelDiv.innerHTML = `
         <button class="del-button"><img src="images/x.svg" class="del-red"></button>
     `;
 
-    // Append user-inputs and edit-del-container to the new process div
     newProcessDiv.appendChild(userInputsDiv);
     newProcessDiv.appendChild(editDelDiv);
 
-    // Append the new process div to the parent-processes-container
     const parentProcessesContainer = document.querySelector('.parent-processes-container');
     parentProcessesContainer.appendChild(newProcessDiv);
 
-    // Add delete listeners for the new process
     addDeleteListeners();
 }
 
 // delete a specific process container
 function deleteProcess(event) {
-    // Find the parent processes-container of the clicked delete button
     const processContainer = event.target.closest('.processes-container');
     if (processContainer) {
-        processContainer.remove(); // Remove the process container from the DOM
+        processContainer.remove();
     }
 }
   
@@ -137,12 +130,10 @@ function coalesceAdjacentHoles() {
     const blocks = simulationContainer.children;
     let holesCombined = false;
 
-    // Iterate over the blocks and find the first adjacent pair of holes or memory-div
     for (let i = 0; i < blocks.length - 1; i++) {
         const currentBlock = blocks[i];
         const nextBlock = blocks[i + 1];
 
-        // Check if both current and next blocks are holes or memory-div
         if ((currentBlock.classList.contains('hole') || currentBlock.classList.contains('memory-div')) &&
             (nextBlock.classList.contains('hole') || nextBlock.classList.contains('memory-div'))) {
 
@@ -151,14 +142,11 @@ function coalesceAdjacentHoles() {
 
             const combinedSize = currentSize + nextSize;
 
-            // Update the current block with the new combined size
             currentBlock.textContent = `${combinedSize} KB remaining`;
             currentBlock.style.height = `${(combinedSize / parseInt(memorySizeInput.value)) * 100}%`;
 
-            // Update the global `holeSize` to reflect the combined hole size
             holeSize = combinedSize;
 
-            // Remove the next block
             nextBlock.remove();
 
             holesCombined = true;
@@ -173,11 +161,10 @@ function coalesceAdjacentHoles() {
 function coalesceAdjacentHolesIfTimeUnitIsValid() {
     const currentTimeUnit = timeCounter;
 
-    // Only coalesce if the current time unit is a multiple of the coalescing time
     if (coalescingHoleTime > 0 && currentTimeUnit > 0 && currentTimeUnit % coalescingHoleTime === 0) {
-        return coalesceAdjacentHoles(); // Call the existing function to combine holes
+        return coalesceAdjacentHoles();
     }
-    return false; // No holes were combined
+    return false;
 }
 
 // get the current state of the memory container
@@ -186,10 +173,10 @@ function getCurrentMemoryState() {
     const blocks = simulationContainer.children;
     
     for (let block of blocks) {
-        memoryState.push(block.outerHTML); // Store the entire block's HTML
+        memoryState.push(block.outerHTML);
     }
     
-    return memoryState.join(''); // Join them into a single string
+    return memoryState.join('');
 }
 
 // perform compaction (largest block first, then combine holes)
@@ -197,7 +184,6 @@ function performStorageCompaction() {
     return new Promise((resolve) => {
         const blocks = Array.from(simulationContainer.children);
 
-        // Separate process blocks and holes/memory-div
         let processBlocks = [];
         let holeBlocks = [];
     
@@ -209,21 +195,18 @@ function performStorageCompaction() {
             }
         });
     
-        // Sort process blocks from largest to smallest size
         processBlocks.sort((a, b) => {
             const sizeA = parseInt(a.textContent.match(/\((\d+) KB\)/)[1]);
             const sizeB = parseInt(b.textContent.match(/\((\d+) KB\)/)[1]);
-            return sizeB - sizeA; // Sort largest to smallest
+            return sizeB - sizeA;
         });
     
         let currentBlockIndex = 0;
     
         function moveNextBlock() {
-            // Check if we still have blocks to move
             if (currentBlockIndex < processBlocks.length) {
                 const block = processBlocks[currentBlockIndex];
     
-                // Move the block to the top of the container but below the previous largest block
                 const firstHoleOrSmallerBlock = Array.from(simulationContainer.children).find(child => 
                     child.classList.contains('hole') || child.classList.contains('memory-div') || 
                     parseInt(child.textContent.match(/\((\d+) KB\)/)?.[1]) < parseInt(block.textContent.match(/\((\d+) KB\)/)[1])
@@ -232,29 +215,25 @@ function performStorageCompaction() {
                 if (firstHoleOrSmallerBlock) {
                     simulationContainer.insertBefore(block, firstHoleOrSmallerBlock);
                 } else {
-                    // If no smaller blocks or holes found, place the block at the end
                     simulationContainer.appendChild(block);
                 }
     
                 currentBlockIndex++;
     
-                // Move the next block after a delay
                 setTimeout(() => {
-                    // Add a new cell to the chart AFTER the block has been moved
                     addCell('SC'); 
-                    moveNextBlock(); // Call for the next block movement
-                }, 1000); // Adjust this delay if needed
+                    moveNextBlock();
+                }, 1000);
                 
             } else {
-                // All blocks have been moved, now combine and place holes
                 combineHoles(holeBlocks);
             }
         }
     
-        moveNextBlock(); // Start moving blocks
+        moveNextBlock();
         setTimeout(() => {
-            resolve(); // Indicate compaction is done
-        }, 3000); // Simulate compaction delay
+            resolve();
+        }, 3000);
     });
 }
 
@@ -262,13 +241,11 @@ function performStorageCompaction() {
 function combineHoles(holeBlocks) {
     let combinedSize = 0;
 
-    // Combine all holes and memory-div into one
     holeBlocks.forEach(hole => {
         combinedSize += parseInt(hole.textContent.match(/\d+/)[0]);
-        hole.remove(); // Remove each hole or memory-div from the container
+        hole.remove();
     });
 
-    // Create a new combined hole with the total size
     if (combinedSize > 0) {
         const combinedHoleDiv = document.createElement('div');
         combinedHoleDiv.classList.add('hole');
@@ -277,11 +254,9 @@ function combineHoles(holeBlocks) {
         combinedHoleDiv.style.color = 'var(--text-color)';
         combinedHoleDiv.textContent = `${combinedSize} KB remaining`;
 
-        // Place the combined hole after the last process block
         simulationContainer.appendChild(combinedHoleDiv);
 
-        // Update the global `holeSize` to reflect the combined hole size
-        holeSize = combinedSize; // Correctly update the global hole size here
+        holeSize = combinedSize;
         holeExists = true;
     }
 }
@@ -293,22 +268,19 @@ function stopAutoForwardingIfFullSizeHoleDetected() {
         return block.classList.contains('hole') && parseInt(block.textContent) === memorySize;
     });
 
-    // If a full-size hole is detected, stop auto-forwarding immediately
     if (fullSizeHole) {
 
-        // Get the latest time unit from the last appended cell in the chart
         const latestCell = chartContainer.lastElementChild;
         const latestTimeUnit = latestCell ? latestCell.querySelector('.tu').textContent : '0';
 
-        // Update the output container with the latest time unit
         const ftuOutputContainer = document.querySelector('.ftu');
         ftuOutputContainer.innerHTML = `${latestTimeUnit}`;
 
         if (forwardIntervalId !== null) {
             clearInterval(forwardIntervalId);
             forwardIntervalId = null;
-            forwardFullImage.src = 'images/player-skip-forward.svg'; // Update the button image
-            forwardFullButton.classList.remove('active'); // Indicate auto-forwarding is inactive
+            forwardFullImage.src = 'images/player-skip-forward.svg';
+            forwardFullButton.classList.remove('active');
         }
     }
 }
@@ -323,31 +295,25 @@ function addCell(label = '') {
     const newCell = document.createElement('div');
     newCell.classList.add('cell');
 
-    // Create the time unit paragraph
     const timeUnit = document.createElement('p');
     timeUnit.classList.add('tu');
     timeUnit.textContent = timeCounter;
 
-    // Determine the content of newCell based on the provided label
     if (label === 'CH') {
-        // Coalescing holes
         newCell.innerHTML = `<p>CH</p>`;
         newCell.classList.add('cell-ch');
-        timeUnit.classList.add('time-ch'); // Add class for different time unit style
+        timeUnit.classList.add('time-ch');
     } else if (label === 'SC') {
-        // Storage compaction
         newCell.innerHTML = `<p>SC</p>`;
         newCell.classList.add('cell-sc');
-        timeUnit.classList.add('time-sc'); // Add class for different time unit style
+        timeUnit.classList.add('time-sc');
     } else if (label.startsWith('J')) {
-        // Display the P# for adding blocks or decrementing time units
         newCell.innerHTML = `<p>${label}</p>`;
         timeUnit.classList.add('time-j');
     } else {
-        // Default to NA if no label is provided
         newCell.innerHTML = `<p>NA</p>`;
         newCell.classList.add('cell-na');
-        timeUnit.classList.add('time-na'); // Add class for different time unit style
+        timeUnit.classList.add('time-na');
     }
 
     newCellContainer.appendChild(newCell);
