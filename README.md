@@ -19,6 +19,12 @@
 
 <img src="images/full-program.png" width="100%" align="center">
 
+## 🌟 Show Your Support
+
+If you find Memvis interesting, please consider giving a star on GitHub. Your support lets others know that it's worth checking out! 
+
+Thank you for your support! 🌟
+
 ## Key Features
 
 * Interactive Memory Visualization

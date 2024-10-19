@@ -777,31 +777,3 @@ button {
   align-items: center;
   text-align: center;
 }
-
-/* .sim-12 .block {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100px;
-  border-radius: 10px;
-  font-weight: 400;
-} */
-
-/* .blk1 {
-  background-color: #d188ff;
-}
-.blk2 {
-  background-color: #a3c6ff;
-}
-.blk3 {
-  background-color: var(--primary-color);
-}
-.blk4 {
-  background-color: #e4ff92;
-}
-.blk5 {
-  background-color: #ffd392;
-}
-.blk6 {
-  background-color: #ff9292;
-} */

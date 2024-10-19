@@ -1,15 +1,5 @@
 window.onload = function () {
     document.body.classList.add('fade-in');
-    
-    // Predefined list of processes
-    // const predefinedProcesses = [
-    //     { name: 'Job 1', size: 500, timeUnit: 3 },
-    //     { name: 'Job 2', size: 250, timeUnit: 4 },
-    //     { name: 'Job 3', size: 200, timeUnit: 5 },
-    //     { name: 'Job 4', size: 350, timeUnit: 3 },
-    //     { name: 'Job 5', size: 60, timeUnit: 5 },
-    //     { name: 'Job 6', size: 300, timeUnit: 3 }
-    // ];
 
     const predefinedProcesses = [
         { name: 'Job 1', size: 200, timeUnit: 5 },
@@ -20,7 +10,6 @@ window.onload = function () {
         { name: 'Job 6', size: 310, timeUnit: 4 }
     ];
   
-    // Automatically add these predefined processes to the list
     predefinedProcesses.forEach(process => {
         addProcessToList(process.name, process.size, process.timeUnit);
     });
@@ -28,104 +17,71 @@ window.onload = function () {
 
 // DECLARATIONS ----------------------------------------------------------------------------------------
 
-// Select input fields by their IDs
 const memorySizeInput = document.getElementById('memory-size');
 const compactionTimeInput = document.getElementById('comp-time');
 const coalescingHoleInput = document.getElementById('coal-hole');
 
-// Select the buttons to capture the input values
 const memoryButton = document.querySelector('.mems-3 button');
 const compactionButton = document.querySelector('.comp-4 button');
 const coalescingButton = document.querySelector('.hole-5 button');
 
-// Select the input fields for process name, size, and TU
 const processNameInput = document.getElementById('processno-input');
 const processSizeInput = document.getElementById('size-input');
 const processTUInput = document.getElementById('tu-input');
 
-// Select the add button
 const addProcessButton = document.querySelector('.process-input-container .add-button');
-
-// Select the parent container for processes
 const parentProcessesContainer = document.querySelector('.parent-processes-container');
-
-// Initialize a counter for the time unit
-let timeCounter = 1;
-
-// Select the item that will trigger the creation of the new cell-container
-const addItem = document.querySelector('.onef-6');
 const chartContainer = document.querySelector('.chart-container');
-
-// Select the item that will trigger the removal of the latest cell-container
-const removeItem = document.querySelector('.oneb-8');
-
-// Select the simulation container and the memory size input
 const simulationContainer = document.querySelector('.simulation-container');
 
-// Select the onef-6 button for adding the block to the simulation-container
+const removeItem = document.querySelector('.oneb-8');
+
 const forwardOnceButton = document.querySelector('.onef-6');
+const forwardFullButton = document.querySelector('.fullf-7');
+const forwardFullImage = forwardFullButton.querySelector('img');
 
-// Initialize an index to keep track of the current process to be added
-let currentProcessIndex = 0;
+const backwardOnceButton = document.querySelector('.oneb-8');
+const backwardFullButton = document.querySelector('.fullb-9');
+const backwardFullImage = backwardFullButton.querySelector('img');
 
-// Variable to track the total used memory
-let totalUsedMemory = 0; // Initialize a variable to keep track of used memory
-
-// Define an array of colors
 const colors = [
-'#b9fbc0', 
-'#98f5e1', 
-'#8eecf5', 
-'#90dbf4', 
-'#a3c4f3', 
-'#cfbaf0', 
-'#f1c0e8', 
-'#ffcfd2', 
-'#fde4cf',
-'#fbf8cc' 
-];
+    '#b9fbc0', 
+    '#98f5e1', 
+    '#8eecf5', 
+    '#90dbf4', 
+    '#a3c4f3', 
+    '#cfbaf0', 
+    '#f1c0e8', 
+    '#ffcfd2', 
+    '#fde4cf',
+    '#fbf8cc' 
+    ];
 
-let coalescingHoleTime = 0; // Track the coalescing time
-
+let currentProcessIndex = 0;
+let timeCounter = 1;
+let totalUsedMemory = 0;
 let decrementIndex = 0;
-let holeExists = false; // Track if a hole exists
-let holeSize = 0; // Store the size of the hole
-let addedProcesses = []; // Track added process names
-let holeIndex = -1; // Store the index of the hole
-let coalescingCounter = 0; // New counter for tracking coalescing clicks
-
-// Initialize a history stack for memory states
+let holeExists = false;
+let holeSize = 0;
+let addedProcesses = [];
+let holeIndex = -1;
 let memoryHistory = [];
 
-// Initialize a counter to track how many clicks have been made since the last compaction
+let coalescingHoleTime = 0;
+let compactionTime = 0;
+let coalescingCounter = 0;
 let compactionCounter = 0;
+let isCoalescing = false;
+let isCompacting = false;
 
-let isCoalescing = false; // Flag to indicate if coalescing is in progress
-
-// Select the item for going backward
-const backwardOnceButton = document.querySelector('.oneb-8');
-
-// Select the fullf-7 button
-const forwardFullButton = document.querySelector('.fullf-7');
-const forwardFullImage = forwardFullButton.querySelector('img'); // Get the image inside the button
-
-// Variable to keep track of the interval for auto-forwarding
 let forwardIntervalId = null;
-
-// Select the backward full button
-const backwardFullButton = document.querySelector('.fullb-9');
-const backwardFullImage = backwardFullButton.querySelector('img'); // Get the image inside the button
-
-// Variable to keep track of the interval for auto-backwarding
 let backwardIntervalId = null;
-let isCompacting = false; // Track if compaction is in progress
-let compactionTime = 0; // Variable to store the compaction time input
 
 // DECLARATIONS ----------------------------------------------------------------------------------------
 
 // FUNCTIONS ----------------------------------------------------------------------------------------
 
-// Function to add a process to the list (reuse the existing logic)
+// add a process to the list
 function addProcessToList(processName, processSize, processTU) {
     // Create the new process div (processes-container)
     const newProcessDiv = document.createElement('div');
@@ -159,7 +115,7 @@ function addProcessToList(processName, processSize, processTU) {
     addDeleteListeners();
 }
 
-// Function to handle deleting a specific process container
+// delete a specific process container
 function deleteProcess(event) {
     // Find the parent processes-container of the clicked delete button
     const processContainer = event.target.closest('.processes-container');
@@ -168,7 +124,7 @@ function deleteProcess(event) {
     }
 }
   
-// Add event listeners to all delete buttons in the existing processes
+// add event listeners to all delete buttons in the existing processes
 function addDeleteListeners() {
 const deleteButtons = document.querySelectorAll('.edit-del-container .del-button');
 deleteButtons.forEach(button => {
@@ -176,7 +132,7 @@ deleteButtons.forEach(button => {
 });
 }
 
-// Function to check and combine adjacent holes or memory-div one step at a time
+// check and combine adjacent holes or memory-div one step at a time
 function coalesceAdjacentHoles() {
     const blocks = simulationContainer.children;
     let holesCombined = false;
@@ -213,7 +169,7 @@ function coalesceAdjacentHoles() {
     return holesCombined;
 }
 
-// Function to check and combine adjacent holes or memory-div based on current time unit
+// check and combine adjacent holes or memory-div based on current time unit
 function coalesceAdjacentHolesIfTimeUnitIsValid() {
     const currentTimeUnit = timeCounter;
 
@@ -224,7 +180,7 @@ function coalesceAdjacentHolesIfTimeUnitIsValid() {
     return false; // No holes were combined
 }
 
-// Function to get the current state of the memory container
+// get the current state of the memory container
 function getCurrentMemoryState() {
     const memoryState = [];
     const blocks = simulationContainer.children;
@@ -236,7 +192,7 @@ function getCurrentMemoryState() {
     return memoryState.join(''); // Join them into a single string
 }
 
-// Function to perform compaction (largest block first, then combine holes)
+// perform compaction (largest block first, then combine holes)
 function performStorageCompaction() {
     return new Promise((resolve) => {
         const blocks = Array.from(simulationContainer.children);
@@ -302,7 +258,7 @@ function performStorageCompaction() {
     });
 }
 
-// Function to combine holes after all blocks have been moved
+// combine holes after all blocks have been moved
 function combineHoles(holeBlocks) {
     let combinedSize = 0;
 
@@ -330,6 +286,7 @@ function combineHoles(holeBlocks) {
     }
 }
 
+// stop auto-forwarding when simulation is done
 function stopAutoForwardingIfFullSizeHoleDetected() {
     const memorySize = parseInt(memorySizeInput.value);
     const fullSizeHole = Array.from(simulationContainer.children).some(block => {
@@ -356,7 +313,7 @@ function stopAutoForwardingIfFullSizeHoleDetected() {
     }
 }
 
-// Function to add a cell to the chart based on label
+// add a cell to the time chart based on label
 function addCell(label = '') {
     console.log(`Adding cell with label: ${label} at time: ${timeCounter}`);
 
@@ -400,28 +357,18 @@ function addCell(label = '') {
     timeCounter++;
 }
 
-
 // FUNCTIONS ----------------------------------------------------------------------------------------
 
 // EVENT LISTENERS ----------------------------------------------------------------------------------------
-
-// Event listener for memory size input
-memoryButton.addEventListener('click', function() {
-    const memorySize = memorySizeInput.value;
-    console.log('Memory Size:', memorySize);
-});
   
-// Event listener to handle adding a process
 addProcessButton.addEventListener('click', function() {
     const processName = processNameInput.value;
     const processSize = processSizeInput.value;
     const processTU = processTUInput.value;
 
-    // Create the new process div (processes-container)
     const newProcessDiv = document.createElement('div');
     newProcessDiv.classList.add('processes-container');
 
-    // Create the user-inputs div
     const userInputsDiv = document.createElement('div');
     userInputsDiv.classList.add('user-inputs');
     userInputsDiv.innerHTML = `
@@ -430,117 +377,95 @@ addProcessButton.addEventListener('click', function() {
         <p>${processTU}</p>
     `;
 
-    // Create the edit-del-container div
     const editDelDiv = document.createElement('div');
     editDelDiv.classList.add('edit-del-container');
     editDelDiv.innerHTML = `
         <button class="del-button"><img src="images/x.svg" class="del-red"></button>
     `;
 
-    // Append user-inputs and edit-del-container to the new process div
     newProcessDiv.appendChild(userInputsDiv);
     newProcessDiv.appendChild(editDelDiv);
 
-    // Append the new process div to the parent-processes-container
     parentProcessesContainer.appendChild(newProcessDiv);
 
-    // Clear the input fields
     processNameInput.value = '';
     processSizeInput.value = '';
     processTUInput.value = '';
 
-    // Add delete listeners for the new process
     addDeleteListeners();
 });
   
-// Initial call to add delete listeners for any existing delete buttons
 addDeleteListeners();
 
-// Event listener for the remove item
 removeItem.addEventListener('click', function() {
     const chartContainer = document.querySelector('.chart-container');
     
-    // Check if there are any cell-containers to remove
     const lastCellContainer = chartContainer.lastElementChild;
     if (lastCellContainer) {
-        chartContainer.removeChild(lastCellContainer); // Remove the last cell-container
-        timeCounter--; // Decrement the counter
+        chartContainer.removeChild(lastCellContainer);
+        timeCounter--; 
     }
 });
 
 memoryButton.addEventListener('click', function() {
     const memorySize = memorySizeInput.value;
 
-    // Clear the simulation container first
     simulationContainer.innerHTML = '';
 
-    // Check if there is a valid input
     if (memorySize) {
-        // Create a new div for the memory size
         const memoryDiv = document.createElement('div');
         memoryDiv.classList.add('memory-div');
 
-        // Create the <p> tag for memory size
         const memoryText = document.createElement('p');
         memoryText.textContent = `${memorySize} KB remaining`;
 
-        // Append the <p> tag to the memory div
         memoryDiv.appendChild(memoryText);
 
-        // Append the memory div to the simulation container
         simulationContainer.appendChild(memoryDiv);
     }
 });
 
-// Event listener for compaction time input
 compactionButton.addEventListener('click', function() {
-    compactionTime = parseInt(compactionTimeInput.value) || 0; // Get the compaction time input
+    compactionTime = parseInt(compactionTimeInput.value) || 0;
     console.log('Compaction Time:', compactionTime);
 });
   
-// Event listener for coalescing hole input
 coalescingButton.addEventListener('click', function () {
-    coalescingHoleTime = parseInt(coalescingHoleInput.value) || 0; // Set to 0 if invalid input
+    coalescingHoleTime = parseInt(coalescingHoleInput.value) || 0; 
     console.log('Coalescing Hole Time:', coalescingHoleTime);
 });
 
 forwardOnceButton.addEventListener('click', function() {
 
     const ftuOutputContainer = document.querySelector('.ftu');
-    ftuOutputContainer.innerHTML = '...'; // Initialize with "..."
+    ftuOutputContainer.innerHTML = '...';
 
-    if (isCompacting) return; // If compaction is in progress, skip further actions
+    if (isCompacting) return;
 
-    // Store the current state before changes
     memoryHistory.push(getCurrentMemoryState());
 
-    const currentTimeUnit = timeCounter; // Use timeCounter to get the current time unit correctly
-    console.log(currentTimeUnit); // Log the current time unit for debugging
+    const currentTimeUnit = timeCounter;
+    console.log(currentTimeUnit);
 
     if (isCoalescing) return;
 
-    // Track whether auto-forwarding was active before compaction
     let wasAutoForwarding = forwardIntervalId !== null;
 
     if (currentTimeUnit > 0 && currentTimeUnit % compactionTime === 0) {
-        isCompacting = true; // Set the compaction flag
-        // Immediately add "SC" to indicate the start of compaction
+        isCompacting = true;
         addCell('SC');
         performStorageCompaction().then(() => {
-            isCompacting = false; // Reset the compaction flag
+            isCompacting = false;
 
-            // Resume auto-forwarding if it was active before compaction
             if (wasAutoForwarding) {
                 forwardIntervalId = setInterval(() => forwardOnceButton.click(), 1000);
                 forwardFullImage.src = 'images/player-pause.svg'; // Update the button image
                 forwardFullButton.classList.add('active'); // Indicate auto-forwarding is active
             }
 
-            // Check for a full-size hole immediately after storage compaction
             stopAutoForwardingIfFullSizeHoleDetected();
         });
 
-        // Temporarily disable auto-forwarding during compaction
         if (forwardIntervalId !== null) {
             clearInterval(forwardIntervalId);
             forwardIntervalId = null;
@@ -548,21 +473,15 @@ forwardOnceButton.addEventListener('click', function() {
         return;
     }
     
-    // Check if it's time to combine holes based on the current time unit
     if (coalesceAdjacentHolesIfTimeUnitIsValid()) {
-        // Add a cell with "CH" label for coalescing holes
         addCell('CH');
-        // If holes were combined, check for full-size hole
         stopAutoForwardingIfFullSizeHoleDetected();
-        return; // Exit the function since coalescing has occurred
-
+        return; 
     }
 
-    // Coalescing is finished, continue normal process
     const parentProcesses = document.querySelectorAll('.parent-processes-container .processes-container');
     let processBlocks = simulationContainer.querySelectorAll('.process-block');
 
-    // If there are no process blocks left, continue with coalescing if possible
     if (processBlocks.length === 0) {
         // Avoid adding "NA" at the start when the chart is empty
         if (chartContainer.children.length > 0) {
@@ -581,7 +500,6 @@ forwardOnceButton.addEventListener('click', function() {
         }
     }
 
-    // First: Attempt to add new process blocks if there’s available memory
     if (currentProcessIndex < parentProcesses.length) {
         const memorySize = parseInt(memorySizeInput.value); // Get total memory size input
         const memoryDiv = simulationContainer.querySelector('.memory-div'); // Get the memory div
@@ -654,7 +572,6 @@ forwardOnceButton.addEventListener('click', function() {
         }        
     }
 
-    // Handle existing blocks or holes
     if (holeExists) {
         let foundProcess = null;
         for (let i = currentProcessIndex; i < parentProcesses.length; i++) {
@@ -724,7 +641,6 @@ forwardOnceButton.addEventListener('click', function() {
         }
     }
 
-    // Decrement time unit for process blocks
     if (processBlocks.length > 0) {
         let processedBlocks = 0; // Count how many blocks have been processed
 
@@ -802,35 +718,28 @@ forwardOnceButton.addEventListener('click', function() {
         }
     }
 
-    // Check if the simulation container has a hole equal to the memory size
     const memorySize = parseInt(memorySizeInput.value);
     const fullSizeHole = Array.from(simulationContainer.children).some(block => {
         return block.classList.contains('hole') && parseInt(block.textContent) === memorySize;
     });
 
-    // If a full-size hole is detected, stop auto-forwarding
     if (fullSizeHole) {
         if (forwardIntervalId !== null) {
             clearInterval(forwardIntervalId);
             forwardIntervalId = null;
-            forwardFullImage.src = 'images/player-skip-forward.svg'; // Update the button image
-            forwardFullButton.classList.remove('active'); // Indicate auto-forwarding is inactive
+            forwardFullImage.src = 'images/player-skip-forward.svg';
+            forwardFullButton.classList.remove('active');
         }
     }
 });
 
-// Event listener for backward button
 backwardOnceButton.addEventListener('click', function() {
-    // Check if there's a previous state to revert to
     if (memoryHistory.length > 0) {
-        const previousState = memoryHistory.pop(); // Get the last state
-
-        // Update the simulation container with the previous state
-        simulationContainer.innerHTML = previousState; // Restore the previous memory container
+        const previousState = memoryHistory.pop();
+        simulationContainer.innerHTML = previousState;
     }
 });
 
-// Event listener for the auto-forward button
 forwardFullButton.addEventListener('click', function() {
     if (forwardIntervalId === null) {
         forwardIntervalId = setInterval(() => forwardOnceButton.click(), 1000);
@@ -844,25 +753,20 @@ forwardFullButton.addEventListener('click', function() {
     }
 });
 
-// Event listener for the auto-backward button
 backwardFullButton.addEventListener('click', function() {
     if (backwardIntervalId === null) {
-        // If no interval is set, start auto-clicking backwardOnceButton every second
         backwardIntervalId = setInterval(() => {
-            backwardOnceButton.click(); // Simulate the click on backwardOnceButton
-        }, 1000); // Run every second
+            backwardOnceButton.click(); 
+        }, 1000);
 
-        // Change the image to player-pause.svg
         backwardFullImage.src = 'images/player-pause.svg';
-        backwardFullButton.classList.add('active'); // Optionally indicate it's active
+        backwardFullButton.classList.add('active');
     } else {
-        // If the interval is already running, stop it
         clearInterval(backwardIntervalId);
-        backwardIntervalId = null; // Reset the intervalId
+        backwardIntervalId = null;
 
-        // Revert the image back to player-skip-forward.svg
         backwardFullImage.src = 'images/player-skip-forward.svg';
-        backwardFullButton.classList.remove('active'); // Optionally revert to inactive
+        backwardFullButton.classList.remove('active');
     }
 });     
 
